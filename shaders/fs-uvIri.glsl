@@ -1,3 +1,4 @@
+#extension GL_OES_standard_derivatives : enable
 
 uniform vec3 lightPos;
 uniform float time;
@@ -14,7 +15,7 @@ uniform vec3 color4;
 varying vec3 vNorm;
 varying vec3 vPos;
 
-//varying vec2 vUv;
+varying vec2 vUv;
 
 
 varying mat3 vNormalMat;
@@ -48,7 +49,7 @@ void main(){
 
 
   // FROM @thespite
-  vec3 n = normalize( vNorm.xyz );
+  /*vec3 n = normalize( vNorm.xyz );
   vec3 blend_weights = abs( n );
   blend_weights = ( blend_weights - 0.2 ) * 7.;  
   blend_weights = max( blend_weights, 0. );
@@ -58,9 +59,9 @@ void main(){
   vec2 coord2 = vPos.zx * texScale;
   vec2 coord3 = vPos.xy * texScale;
 
-  vec3 bump1 = texture2D( tNormal , coord1/* + vec2( time * .1 , time * .2 )   */   ).rgb;  
-  vec3 bump2 = texture2D( tNormal , coord2/* + vec2( time * .13 , time * .083 )*/   ).rgb;  
-  vec3 bump3 = texture2D( tNormal , coord3/* + vec2( time * .05 , time * .15 ) */   ).rgb; 
+  vec3 bump1 = texture2D( tNormal , coord1  ).rgb;  
+  vec3 bump2 = texture2D( tNormal , coord2   ).rgb;  
+  vec3 bump3 = texture2D( tNormal , coord3   ).rgb; 
 
   vec3 blended_bump = bump1 * blend_weights.xxx +  
                       bump2 * blend_weights.yyy +  
@@ -78,19 +79,31 @@ void main(){
   normalTex.y *= -1.;
   normalTex = normalize( normalTex );
   mat3 tsb = mat3( normalize( blended_tangent ), normalize( cross( vNorm, blended_tangent ) ), normalize( vNorm ) );
- 
- // vec3 bump = texture2D( tNormal , vUv ).xyz;
-  vec3 finalNormal = tsb * normalTex;
-  //vec3 finalNormal = normalize(vNorm  + 1. *  bump);
+ */
+  //vec3 bump = texture2D( tNormal , vUv ).xyz;
+  //vec3 finalNormal = tsb * normalTex;
+
+    vec3 q0 = dFdx( vPos.xyz );
+    vec3 q1 = dFdy( vPos.xyz );
+    vec2 st0 = dFdx( vUv.st );
+    vec2 st1 = dFdy( vUv.st );
+
+    vec3 S = normalize(  q0 * st1.t - q1 * st0.t );
+    vec3 T = normalize( -q0 * st1.s + q1 * st0.s );
+    vec3 N = normalize( vNorm );
+
+    vec3 mapN = texture2D( tNormal, vUv ).xyz * 2.0 - 1.0;
+    mapN.xy = normalScale * mapN.xy;
+   
+
+    
+    mat3 tsn = mat3( S, T, N );
+
+    //vec3 finalNormal = vNorm;
+    vec3 finalNormal =  normalize( tsn * mapN );
 
 
-
-  vec3 vU = normalize( vMVPos );
-  vec3 r = reflect( normalize( vU ), normalize( finalNormal ) );
-  float m = 2.0 * sqrt( r.x * r.x + r.y * r.y + ( r.z + 1.0 ) * ( r.z + 1.0 ) );
-  vec2 calculatedNormal = vec2( r.x / m + 0.5,  r.y / m + 0.5 );
-
-  vec3 base = texture2D( tNormal, calculatedNormal ).rgb;
+ // vec3 finalNormal = normalize(vNorm  + 1. *  bump);
 
   vec3 newNormal = finalNormal;
 

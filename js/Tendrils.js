@@ -45,14 +45,14 @@
       height:1000,
       girth: 10,
       headMultiplier: 4,
-      floatForce: 1000,
-      springForce: 40,
-      springDist: 50,
+      floatForce: 200,
+      springForce: 100,
+      springDist: 20,
       repelMultiplier: 100,
-      flowMultiplier: 3000,
-      maxVel:200,
-      dampening:.96,
-      baseGeo: new THREE.PlaneGeometry( 30 , 30 , 20 , 20),
+      flowMultiplier: 100,
+      maxVel:600,
+      dampening:.99999,
+      baseGeo: new THREE.IcosahedronGeometry( 30 , 2 ),
       baseMat: new THREE.MeshNormalMaterial()
       
 
@@ -145,7 +145,8 @@
     this.physicsRenderer.setUniform( 'maxVel' , maxVel );
     this.physicsRenderer.setUniform( 'uDampening' , dampening );
 
-    /*physicsGui.add( repelMultiplier , 'value' ).name( 'Repel Multiplier' );
+   /* var physicsGui = gui.addFolder( 'PhysicsGui' );
+    physicsGui.add( repelMultiplier , 'value' ).name( 'Repel Multiplier' );
     physicsGui.add( flowMultiplier , 'value' ).name( 'Flow Multiplier' );
     physicsGui.add( floatForce , 'value' ).name( 'Float Force' );
     physicsGui.add( springForce , 'value' ).name( 'Spring Force' )
@@ -170,7 +171,7 @@
     var headMultiplier = {type:"f" ,value: this.params.headMultiplier}
 
 
-    var t_iri = THREE.ImageUtils.loadTexture( '../img/iri/gold.png' );
+    var t_iri = THREE.ImageUtils.loadTexture( '../img/iri/combo6.png' );
 
 
     var uniforms = {
@@ -244,7 +245,7 @@
     var color1 = new THREE.Vector3( 1. , 1. , .3 );
     var color2 = new THREE.Vector3( 5. , 2. , 0 );
     var color3 = new THREE.Vector3( 1. , .4 , 0. );
-    var color4 = new THREE.Vector3( 0. , 1. , 6. );
+    var color4 = new THREE.Vector3( 8. , 1. , .2 );
 
     
     var uniforms = {
@@ -252,6 +253,7 @@
       lightPos: { type:"v3" , value: new THREE.Vector3(100,0,0)},
       tNormal:{type:"t",value:tNormal},
       time:timer,
+      t_iri: { type:"t" , value: t_iri },
       tLookup:{ type:"t" , value: tLookup },
       t_audio:{ type:"t" , value: audioController.texture },
       color1:{ type:"v3" , value: color1 },
@@ -279,14 +281,14 @@
 
 
     this.centerMat = material
-    this.center = new THREE.Mesh( new THREE.IcosahedronGeometry( 300 , 3 ) , material);
+    this.center = new THREE.Mesh( new THREE.IcosahedronGeometry( 300 , 3 ) , uvMat );
     scene.add( this.center );
 
 
     for( var i =0; i < this.bases.length; i++ ){
 
       var m = this.bases[i].mesh;
-      m.material = this.centerMat;
+      m.material = uvMat;
       m.materialNeedsUpdate = true;
 
     }

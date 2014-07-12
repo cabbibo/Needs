@@ -3,7 +3,7 @@ uniform vec3 lightPos;
 uniform float time;
 uniform sampler2D t_audio;
 
-//varying vec2 vUv;
+varying vec2 vUv;
 
 varying vec3 vPos;
 varying vec3 vNorm;
@@ -67,7 +67,7 @@ void main(){
  // vec3 flow = sin( time ) * vec3( 0. , 1. , 0. );
 
 
-  //vUv = uv;
+  vUv = uv;
  
   //vPos += flow * vPos.x; //.3 *  normal * radial * texture2D( t_audio ,vec2( abs(normal.x) , 0. ) ).x ;
 
