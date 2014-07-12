@@ -42,7 +42,7 @@ void main(){
   vec3 nonFacing =  lookup * (1.-facingRatio)* (1.-facingRatio)* (1.-facingRatio);
 
   vec3 norm = vec3(abs(finalNormal.x));
-  gl_FragColor = vec4(.2* lookup * aColor + nonFacing, 1.0 );
+  gl_FragColor = vec4(.6 * lookup * aColor + .4 * nonFacing, 1.0 );
   //gl_FragColor = vec4(facing, 1.0 );
   //gl_FragColor = vec4(  normalTex , 1.0 );
 

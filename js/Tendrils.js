@@ -48,7 +48,7 @@
       floatForce: 400,
       springForce: 100,
       springDist: 40,
-      repelMultiplier: 100,
+      repelMultiplier: 10000,
       flowMultiplier: 0,
       maxVel:600,
       dampening:.99999,

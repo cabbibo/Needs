@@ -1,6 +1,7 @@
 
 uniform vec3 lightPos;
 uniform float time;
+uniform float timeMatMultiplier;
 uniform sampler2D tNormal;
 uniform sampler2D t_audio;
 uniform sampler2D tLookup;
@@ -58,9 +59,9 @@ void main(){
   vec2 coord2 = vPos.zx * texScale;
   vec2 coord3 = vPos.xy * texScale;
 
-  vec3 bump1 = texture2D( tNormal , coord1/* + vec2( time * .1 , time * .2 )   */   ).rgb;  
-  vec3 bump2 = texture2D( tNormal , coord2/* + vec2( time * .13 , time * .083 )*/   ).rgb;  
-  vec3 bump3 = texture2D( tNormal , coord3/* + vec2( time * .05 , time * .15 ) */   ).rgb; 
+  vec3 bump1 = texture2D( tNormal , coord1 + vec2( time * .1 , time * .2 ) * timeMatMultiplier    ).rgb;  
+  vec3 bump2 = texture2D( tNormal , coord2 + vec2( time * .13 , time * .083 ) * timeMatMultiplier   ).rgb;  
+  vec3 bump3 = texture2D( tNormal , coord3 + vec2( time * .05 , time * .15 ) * timeMatMultiplier   ).rgb; 
 
   vec3 blended_bump = bump1 * blend_weights.xxx +  
                       bump2 * blend_weights.yyy +  
