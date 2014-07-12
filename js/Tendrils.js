@@ -45,11 +45,11 @@
       height:1000,
       girth: 10,
       headMultiplier: 4,
-      floatForce: 200,
+      floatForce: 400,
       springForce: 100,
-      springDist: 20,
+      springDist: 40,
       repelMultiplier: 100,
-      flowMultiplier: 100,
+      flowMultiplier: 0,
       maxVel:600,
       dampening:.99999,
       baseGeo: new THREE.IcosahedronGeometry( 30 , 2 ),
@@ -70,8 +70,11 @@
 
     this.sim = shaders.simulationShaders.tendrilSim;
 
-    this.flow = camera.velocity;
-        
+    //this.flow = camera.velocity;
+    
+    this.flow = new THREE.Vector3( 0 , 1 , 0 );
+
+
     this.bases = this.createBases();
 
     this.startingTexture  = this.createStartingTexture();
@@ -171,7 +174,7 @@
     var headMultiplier = {type:"f" ,value: this.params.headMultiplier}
 
 
-    var t_iri = THREE.ImageUtils.loadTexture( '../img/iri/combo6.png' );
+    var t_iri = THREE.ImageUtils.loadTexture( '../img/iri/gold.png' );
 
 
     var uniforms = {
@@ -225,7 +228,7 @@
 
     this.physicsRenderer.addBoundTexture( this.mesh , 't_pos' , 'output' );
 
-    this.mesh.frustumCulled = false;
+   // this.mesh.frustumCulled = false;
 
     this.flowMarkerGeo = new THREE.Geometry();
     this.flowMarkerGeo.vertices.push( new THREE.Vector3() );
@@ -279,16 +282,20 @@
 
     });
 
+    var bM = new THREE.MeshBasicMaterial({color:0x000000});
+    
 
     this.centerMat = material
-    this.center = new THREE.Mesh( new THREE.IcosahedronGeometry( 300 , 3 ) , uvMat );
+    this.center = new THREE.Mesh( new THREE.IcosahedronGeometry( 300 , 3 ) , bM );
     scene.add( this.center );
 
+
+    //var bM = new THREE.MeshBasicMaterial({color:0x000000});
 
     for( var i =0; i < this.bases.length; i++ ){
 
       var m = this.bases[i].mesh;
-      m.material = uvMat;
+      m.material = bM;
       m.materialNeedsUpdate = true;
 
     }

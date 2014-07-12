@@ -337,6 +337,7 @@ z-index: 999;
     repelRadii.push( 340 );
 
     var geo =  new THREE.CubeGeometry( 200 , 200 , 200 ) 
+    var geo =  new THREE.IcosahedronGeometry( 200 , 2 ) 
     for( var i = 0; i< 10; i++ ){
 
         var repelObject = {}
@@ -347,7 +348,7 @@ z-index: 999;
         var x = 1000 * Math.cos( theta );
         var z = 1000 * Math.sin( theta );
 
-        repelObject.mesh = new THREE.Mesh( geo , uvMat );
+        repelObject.mesh = new THREE.Mesh( geo , shinyMat );
         repelObject.velocity = new THREE.Vector3(
           ( Math.random() - .5 ) * 100,
           ( Math.random() - .5 ) * 100,
@@ -412,8 +413,8 @@ z-index: 999;
 
 
 
-    vertexShader   = shaders.vertexShaders.fire;
-    fragmentShader = shaders.fragmentShaders.fire;
+    vertexShader   = shaders.vertexShaders.uvIri;
+    fragmentShader = shaders.fragmentShaders.uvIri;
 
     material = new THREE.ShaderMaterial({
 
@@ -425,7 +426,7 @@ z-index: 999;
     });
 
 
-    mesh = new THREE.Mesh( skullGeo , material );
+    mesh = new THREE.Mesh( skullGeo , material );// material );
 
     mesh.scale.multiplyScalar( 20.5 );
 
@@ -467,7 +468,7 @@ z-index: 999;
       
     });
 
-   // tendrils.activate();
+    tendrils.activate();
 
     controller.connect();
 
