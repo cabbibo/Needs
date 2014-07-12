@@ -2,6 +2,7 @@
 //uniform vec3 color;
 
 uniform sampler2D t_iri;
+uniform sampler2D t_iri2;
 uniform sampler2D tNormal;
 uniform sampler2D t_audio;
 uniform sampler2D t_active;
@@ -54,7 +55,7 @@ void main(){
   vec3 vNorm = vNormal;
 
   // FROM @thespite
-  /*vec3 n = normalize( vNorm.xyz );
+  vec3 n = normalize( vNorm.xyz );
   vec3 blend_weights = abs( n );
   blend_weights = ( blend_weights - 0.2 ) * 7.;  
   blend_weights = max( blend_weights, 0. );
@@ -84,7 +85,7 @@ void main(){
   normalTex.y *= -1.;
   normalTex = normalize( normalTex );
   mat3 tsb = mat3( normalize( blended_tangent ), normalize( cross( vNorm, blended_tangent ) ), normalize( vNorm ) );
-  vec3 finalNormal = tsb * normalTex;*/
+  vec3 finalNormal = tsb * normalTex;
 
  /* vec3 vU = normalize( vMVPos );
   vec3 r = reflect( normalize( vU ), normalize( finalNormal ) );
@@ -136,7 +137,7 @@ void main(){
 
   //vec3 test =  ( vTest * vAmount);
 
-  vec3 finalNormal = vNormal;// + 1. *  texture2D( tNormal , abs(vec2(sin(vNormal.y * 100.) , cos( vNormal.z * 10. )))).xyz;
+ // vec3 finalNormal = vNormal;// + 1. *  texture2D( tNormal , abs(vec2(sin(vNormal.y * 100.) , cos( vNormal.z * 10. )))).xyz;
 
  // vec3 c = finalNormal;
   
@@ -169,7 +170,7 @@ void main(){
   vec3 lookup_table_color = cubicCurve( inverse_dot_view * facingRatio, c1 , c2 , c3 , c4 );*/
 
 
-  float hovered   = active.x;
+ /* float hovered   = active.x;
   float selected  = active.y;
   float current   = active.z;
 
@@ -211,11 +212,18 @@ void main(){
   lookupOffset /= 6.;
 
 
-  float fLookup =(  inverse_dot_view * facingRatio  * (1./6.) ) +lookupOffset;
+  float fLookup =(  inverse_dot_view * facingRatio  * (1./6.) ) +lookupOffset;*/
 
-  vec3 lookup_table_color = texture2D( t_iri , vec2( fLookup , 0. ) ).xyz;
+  vec3 lookup_table_color = texture2D( t_iri , vec2( lookup , 0. ) ).xyz;
 
-  vec3 c =  lookup_table_color * aColor;//aColor;//active.xyz * (vNormal*.7+.3) * .75 + (vHead * .25);
+  if( vHead >= .5 ){
+
+    lookup_table_color = texture2D( t_iri2 , vec2( lookup , 0. ) ).xyz;
+
+  }
+
+  vec3 nonFacing = lookup_table_color * (1.-facingRatio)* (1.-facingRatio)* (1.-facingRatio);
+  vec3 c =  lookup_table_color * aColor * .6 + nonFacing*.4;//aColor;//active.xyz * (vNormal*.7+.3) * .75 + (vHead * .25);
 
  /* float hovered = active.z;
   float selected = active.y;

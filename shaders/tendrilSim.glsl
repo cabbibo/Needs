@@ -4,6 +4,7 @@ uniform sampler2D t_audio;
 uniform sampler2D t_active;
 uniform sampler2D t_og;
 
+uniform mat4 uModelView;
 uniform float dT;
 uniform float timer;
 
@@ -102,6 +103,7 @@ void main(){
   vec3 oPos = texture2D( t_oPos , vUv.xy ).xyz;
   vec3 ogPos = texture2D( t_og , vUv.xy ).xyz;
 
+  ogPos = ( uModelView * vec4( ogPos , 1. ) ).xyz;
 
   vec3 floating = normalize(ogPos);
 
@@ -158,7 +160,7 @@ void main(){
   y *= 10.;
   x *= 10.;
 
-  vec3 newPos = pos;
+  vec3 newPos = ogPos;
 
   vec3 force = vec3( 0. );
 
@@ -183,7 +185,8 @@ void main(){
     vec3 dif = ogPos - pos;
 
    // force += normalize( dif ) * 30.;
- 
+
+    //force += 
     force -= flow * slice * uFlowMultiplier;
 
     force += floating * upwardsForce * uFloatForce;
@@ -199,7 +202,16 @@ void main(){
     vec3 posUp = texture2D( t_pos , vUv.xy + vec2( 0. , size ) ).xyz;
 
     force += springForce( pos , posDown ,uSpringDist  );
-    force += springForce( pos , posUp , uSpringDist );
+    //force += springForce( pos , posUp , uSpringDist );
+
+
+    vec3 difUpDown = posUp - posDown;
+    vec3 mid = posDown + (.5  * difUpDown);
+
+    //force += 100000. * springForce( pos , mid , 0. );
+
+
+
     
     //force += springForce( pos , posDown , 0. ) * 10.;
    // force += springForce( pos , posUp , 10. ) * 100.;
@@ -242,6 +254,13 @@ void main(){
     
     newPos = pos + vel * fDT * ((playing * 4.)+1.);
 
+   /* float l = length(newPos);
+    if( l <= 305. ){
+
+      vec3 n = normalize( ogPos );
+      newPos = n * 305.;
+
+    }*/
     gl_FragColor = vec4( newPos , 1. );
 
   }

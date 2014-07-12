@@ -43,14 +43,14 @@
       repelRadii: repelRadii,
       width:1000,
       height:1000,
-      girth: 10,
-      headMultiplier: 4,
-      floatForce: 400,
+      girth: 5,
+      headMultiplier: 6,
+      floatForce: 10000,
       springForce: 100,
-      springDist: 40,
-      repelMultiplier: 10000,
+      springDist: 100,
+      repelMultiplier: 50,
       flowMultiplier: 0,
-      maxVel:600,
+      maxVel:1000,
       dampening:.99999,
       baseGeo: new THREE.IcosahedronGeometry( 30 , 2 ),
       baseMat: new THREE.MeshNormalMaterial()
@@ -74,7 +74,17 @@
     
     this.flow = new THREE.Vector3( 0 , 1 , 0 );
 
+    var bM = new THREE.MeshNormalMaterial({color:0x000000});
+   // var bM = new THREE.MeshBasicMaterial({color:0x000000});
+    
 
+    this.centerMat = material
+    this.center = new THREE.Mesh( new THREE.IcosahedronGeometry( 300 , 3 ) , bM );
+    scene.add( this.center );
+
+    console.log( 'CENTER' );
+    console.log( this.center );
+ 
     this.bases = this.createBases();
 
     this.startingTexture  = this.createStartingTexture();
@@ -86,7 +96,12 @@
       renderer
     );
 
-    
+    this.physicsRenderer.setUniform( 'uModelView' , {
+      type:"m4",
+      value: this.center.matrixWorld
+    });
+
+
     this.physicsRenderer.setUniform( 't_active' ,{
       type:"t",
       value:this.activeTexture
@@ -163,7 +178,7 @@
     this.physicsRenderer.setUniform( 'timer'  , timer );
 
 
-    this.normalTexture = THREE.ImageUtils.loadTexture('../img/normals/sand.png');
+    this.normalTexture = THREE.ImageUtils.loadTexture('../img/normals/moss_normal_map.jpg');
 
     this.normalTexture.wrapS = THREE.RepeatWrapping;
     this.normalTexture.wrapT = THREE.RepeatWrapping;
@@ -174,16 +189,23 @@
     var headMultiplier = {type:"f" ,value: this.params.headMultiplier}
 
 
-    var t_iri = THREE.ImageUtils.loadTexture( '../img/iri/gold.png' );
+    var t_iri = THREE.ImageUtils.loadTexture( '../img/iri/red.png' );
+    var t_iri = THREE.ImageUtils.loadTexture( '../img/iri/turq.png' );
+    var t_iri2 = THREE.ImageUtils.loadTexture( '../img/iri/pinkRed.png' );
 
 
     var uniforms = {
       t_pos:{type:"t",value:null},
       t_iri:{type:"t",value:t_iri},
+      t_iri2:{type:"t",value:t_iri2},
       t_audio:{type:"t",value:audioController.texture},
       lightPos:{type:"v3",value:new THREE.Vector3( 0 , 1 , 0 )},
       t_active:{type:"t",value:this.activeTexture},
       girth:girth,
+      tNormal:{type:"t",value:this.normalTexture},
+      uMVMat:{type:"m4", value:this.center.matrixWorld},
+      texScale:{type:"f",value:.01},
+      normalScale:{type:"f",value:.2},
       headMultiplier:headMultiplier
     }
 
@@ -236,62 +258,6 @@
 
     this.flowMarker = new THREE.Line( this.flowMarkerGeo , new THREE.LineBasicMaterial() );
 
-
-    var tNormal = THREE.ImageUtils.loadTexture( 'img/normals/moss_normal_map.jpg' );
-    tNormal.wrapS = THREE.RepeatWrapping; 
-    tNormal.wrapT = THREE.RepeatWrapping; 
-    console.log( 'TNOMAL');
-    console.log( tNormal );
-
-    var tLookup = THREE.ImageUtils.loadTexture( 'img/iriLookup.png' );
-
-    var color1 = new THREE.Vector3( 1. , 1. , .3 );
-    var color2 = new THREE.Vector3( 5. , 2. , 0 );
-    var color3 = new THREE.Vector3( 1. , .4 , 0. );
-    var color4 = new THREE.Vector3( 8. , 1. , .2 );
-
-    
-    var uniforms = {
-
-      lightPos: { type:"v3" , value: new THREE.Vector3(100,0,0)},
-      tNormal:{type:"t",value:tNormal},
-      time:timer,
-      t_iri: { type:"t" , value: t_iri },
-      tLookup:{ type:"t" , value: tLookup },
-      t_audio:{ type:"t" , value: audioController.texture },
-      color1:{ type:"v3" , value: color1 },
-      color2:{ type:"v3" , value: color2 },
-      color3:{ type:"v3" , value: color3 },
-      color4:{ type:"v3" , value: color4 },
-      texScale:{type:"f" , value:.001},
-      normalScale:{type:"f" , value:.1}
-
-
-    }
-
-
-
-    var vertexShader   = shaders.vertexShaders.planet;
-    var fragmentShader = shaders.fragmentShaders.planet;
-
-    var material = new THREE.ShaderMaterial({
-
-      uniforms: uniforms,
-      vertexShader: vertexShader,
-      fragmentShader: fragmentShader
-
-    });
-
-    var bM = new THREE.MeshBasicMaterial({color:0x000000});
-    
-
-    this.centerMat = material
-    this.center = new THREE.Mesh( new THREE.IcosahedronGeometry( 300 , 3 ) , bM );
-    scene.add( this.center );
-
-
-    //var bM = new THREE.MeshBasicMaterial({color:0x000000});
-
     for( var i =0; i < this.bases.length; i++ ){
 
       var m = this.bases[i].mesh;
@@ -312,7 +278,7 @@
 
     for( var i = 0; i < this.bases.length; i++ ){
 
-      scene.add( this.bases[i].mesh );
+      this.center.add( this.bases[i].mesh );
 
     }
 
@@ -338,6 +304,9 @@
     var y = r * Math.sin( timer.value * 1);
     var z = r * Math.tan( timer.value * 1);
 
+   /* this.center.rotation.y += Math.cos( timer.value ) * .01;
+    this.center.rotation.x += Math.cos( timer.value * .3 ) * .01;
+    this.center.rotation.z += Math.sin( timer.value * .1 ) * .01;*/
    // console.log( x );
 
    
@@ -348,6 +317,10 @@
       //this.flowMarker.geometry.vertices[1] = this.flow;
     this.flowMarker.geometry.verticesNeedUpdate = true;
 
+    this.physicsRenderer.update();
+    this.physicsRenderer.update();
+    this.physicsRenderer.update();
+    this.physicsRenderer.update();
     this.physicsRenderer.update();
 
   }

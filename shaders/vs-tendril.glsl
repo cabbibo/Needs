@@ -4,6 +4,8 @@ uniform sampler2D t_pos;
 uniform vec3 lightPos;
 uniform float girth;
 uniform float headMultiplier;
+uniform mat4 uMVMat;
+uniform sampler2D t_audio;
 
 varying vec2 vUv;
 varying vec3 vNormal;
@@ -201,15 +203,20 @@ void main(){
 
  
 
-  float radius = girth;//(baseDown-baseUp); //( baseDown - baseUp );// * //amount;
 
   vHead = 0.;
   
+  vec4 aPower = texture2D( t_audio , vec2( (base / 32. ) , 0. ) );
+
+  float audio = length( aPower );
+  float radius = audio * audio * audio * girth;
+
   if( baseDown > 9. ){
 
     vHead = 1.;
-    radius = girth * headMultiplier * (max( 0. , sqrt(( 14. - (base) )))/5.);
+    radius = audio * audio * audio * girth * headMultiplier * (max( 0. , sqrt(( 14. - (base) )))/5.);
 
+    //radius = audio * audio * audio * girth;
   }
   //if( uv.x < 1. / 64. ){
     point = centerOfCircle + radius * basisX * x  + radius * basisY * y;
@@ -219,13 +226,15 @@ void main(){
  
   vNormal = normalize(point - centerOfCircle);
 
-  vView = modelViewMatrix[3].xyz;
+  vNormal = (uMVMat * vec4( vNormal , 1.0 )).xyz;
+
+  vView = uMVMat[3].xyz;
  // vNormal = normalMatrix *  vNormal ;
   vNormalMat = normalMatrix;
 
   vPos = point;
  
-  vMVPos = (modelViewMatrix * vec4( vPos , 1.0 )).xyz;
+  vMVPos = (uMVMat * vec4( vPos , 1.0 )).xyz;
   vec3 lightDir = normalize( lightPos -  vMVPos );
 
   vLightDir = lightDir;
