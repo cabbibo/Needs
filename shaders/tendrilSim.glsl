@@ -184,9 +184,9 @@ void main(){
 
    // force += normalize( dif ) * 30.;
  
-    force += flow * slice * uFlowMultiplier*( ( current * 5.)+1.);
+    force -= flow * slice * uFlowMultiplier;
 
-    force += floating * upwardsForce * uFloatForce * (( selected * 5.)+1.);
+    force += floating * upwardsForce * uFloatForce;
 
     force += getRepelForce( pos );
 
@@ -212,9 +212,9 @@ void main(){
 
 //    vec3 columnDif = vec3( x , y , 0 ) - pos;
    // force += vec3( columnDif.xy * 10. , 0. )*10.;
-    force += flow * slice * uFlowMultiplier *( ( current * 5.)+1.);
+    force -= flow * slice * uFlowMultiplier;
 
-    force += floating * upwardsForce * uFloatForce * (( selected * 5.)+1.);
+    force += floating * upwardsForce * uFloatForce;
 
     force += getRepelForce( pos );
 

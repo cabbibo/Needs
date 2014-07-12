@@ -5,6 +5,11 @@ uniform sampler2D tNormal;
 uniform sampler2D t_audio;
 uniform sampler2D tLookup;
 
+
+uniform float texScale;
+uniform float normalScale;
+
+
 uniform vec3 color1;
 uniform vec3 color2;
 uniform vec3 color3;
@@ -19,8 +24,7 @@ varying vec3 vLightPos;
 varying vec3 vView;
 varying vec3 vMVPos;
 
-const float texScale =1.;
-const float normalScale = .0001;
+
 
 $simplex
 

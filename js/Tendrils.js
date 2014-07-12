@@ -45,14 +45,14 @@
       height:1000,
       girth: 10,
       headMultiplier: 4,
-      floatForce: 100,
-      springForce: 100,
-      springDist: 1,
+      floatForce: 1000,
+      springForce: 40,
+      springDist: 50,
       repelMultiplier: 100,
-      flowMultiplier: 0,
+      flowMultiplier: 3000,
       maxVel:200,
       dampening:.96,
-      baseGeo: new THREE.BoxGeometry( 2 , 2 , 2 ),
+      baseGeo: new THREE.PlaneGeometry( 30 , 30 , 20 , 20),
       baseMat: new THREE.MeshNormalMaterial()
       
 
@@ -70,7 +70,7 @@
 
     this.sim = shaders.simulationShaders.tendrilSim;
 
-    this.flow = new THREE.Vector3();
+    this.flow = camera.velocity;
         
     this.bases = this.createBases();
 
@@ -170,62 +170,6 @@
     var headMultiplier = {type:"f" ,value: this.params.headMultiplier}
 
 
-    /*var renderGui = gui.addFolder( 'Tendril Render');
-
-    renderGui.add( girth , 'value' ).name( 'Girth' );
-    renderGui.add( headMultiplier , 'value' ).name( 'Head Multiplier' );*/
-
-
-    /*this.color1 = {type:"v3",value:new THREE.Vector3( 1 , 0 , 0 ) }
-    this.color2 = {type:"v3",value:new THREE.Vector3( 0 , 0 , 1 ) }
-    this.color3 = {type:"v3",value:new THREE.Vector3( 1 , 1 , 0 ) }
-    this.color4 = {type:"v3",value:new THREE.Vector3( 0 , 1 , 1 ) }
-
-    var texScale    = { type:"f",value:.01}
-    var normalScale = { type:"f",value:.5}
-
-
-    renderGui.add( texScale , 'value' ).name( 'Texture Scale' );
-    renderGui.add( normalScale , 'value' ).name( 'Normal Scale' );
-    
-    var c ={ 
-      c1: '#ff0000',
-      c2:   '#eeaa00',
-      c3:'#0000ff',
-      c4:'#999999' 
-    }
-
-    renderGui.addColor( c , 'c1' ).name('Color 1').onChange( function( value ){
-      var col = new THREE.Color( value );
-      this.color1.value.x = col.r;
-      this.color1.value.y = col.g;
-      this.color1.value.z = col.b;
-    }.bind( this ));
-
-    renderGui.addColor( c , 'c2' ).name('Color 2').onChange( function( value ){
-      var col = new THREE.Color( value );
-      this.color2.value.x = col.r;
-      this.color2.value.y = col.g;
-      this.color2.value.z = col.b;
-    }.bind( this ));
-
-
-    renderGui.addColor( c , 'c3' ).name('Color 3').onChange( function( value ){
-      var col = new THREE.Color( value );
-      this.color3.value.x = col.r;
-      this.color3.value.y = col.g;
-      this.color3.value.z = col.b;
-    }.bind( this ));
-
-
-    renderGui.addColor( c , 'c4' ).name('Color 4').onChange( function( value ){
-      var col = new THREE.Color( value );
-      this.color4.value.x = col.r;
-      this.color4.value.y = col.g;
-      this.color4.value.z = col.b;
-    }.bind( this ));*/
-
-
     var t_iri = THREE.ImageUtils.loadTexture( '../img/iri/gold.png' );
 
 
@@ -235,13 +179,6 @@
       t_audio:{type:"t",value:audioController.texture},
       lightPos:{type:"v3",value:new THREE.Vector3( 0 , 1 , 0 )},
       t_active:{type:"t",value:this.activeTexture},
-     // texScale:texScale,
-     // normalScale:normalScale,
-     // tNormal:{type:"t",value:this.normalTexture},
-      //color1:this.color1,
-      //color2:this.color2,
-      //color3:this.color3,
-      //color4:this.color4,
       girth:girth,
       headMultiplier:headMultiplier
     }
@@ -296,6 +233,63 @@
     this.flowMarker = new THREE.Line( this.flowMarkerGeo , new THREE.LineBasicMaterial() );
 
 
+    var tNormal = THREE.ImageUtils.loadTexture( 'img/normals/moss_normal_map.jpg' );
+    tNormal.wrapS = THREE.RepeatWrapping; 
+    tNormal.wrapT = THREE.RepeatWrapping; 
+    console.log( 'TNOMAL');
+    console.log( tNormal );
+
+    var tLookup = THREE.ImageUtils.loadTexture( 'img/iriLookup.png' );
+
+    var color1 = new THREE.Vector3( 1. , 1. , .3 );
+    var color2 = new THREE.Vector3( 5. , 2. , 0 );
+    var color3 = new THREE.Vector3( 1. , .4 , 0. );
+    var color4 = new THREE.Vector3( 0. , 1. , 6. );
+
+    
+    var uniforms = {
+
+      lightPos: { type:"v3" , value: new THREE.Vector3(100,0,0)},
+      tNormal:{type:"t",value:tNormal},
+      time:timer,
+      tLookup:{ type:"t" , value: tLookup },
+      t_audio:{ type:"t" , value: audioController.texture },
+      color1:{ type:"v3" , value: color1 },
+      color2:{ type:"v3" , value: color2 },
+      color3:{ type:"v3" , value: color3 },
+      color4:{ type:"v3" , value: color4 },
+      texScale:{type:"f" , value:.001},
+      normalScale:{type:"f" , value:.1}
+
+
+    }
+
+
+
+    var vertexShader   = shaders.vertexShaders.planet;
+    var fragmentShader = shaders.fragmentShaders.planet;
+
+    var material = new THREE.ShaderMaterial({
+
+      uniforms: uniforms,
+      vertexShader: vertexShader,
+      fragmentShader: fragmentShader
+
+    });
+
+
+    this.centerMat = material
+    this.center = new THREE.Mesh( new THREE.IcosahedronGeometry( 300 , 3 ) , material);
+    scene.add( this.center );
+
+
+    for( var i =0; i < this.bases.length; i++ ){
+
+      var m = this.bases[i].mesh;
+      m.material = this.centerMat;
+      m.materialNeedsUpdate = true;
+
+    }
     this.physicsRenderer.reset( this.startingTexture );
 
     //scene.add( this.flowMarker );
@@ -337,8 +331,8 @@
 
    // console.log( x );
 
-    
-    this.flow.set( x , y , z );
+   
+    //this.flow.set( x , y , z );
     /*this.flow.copy( camera.position );
     this.flow.normalize();*/
 
@@ -569,7 +563,10 @@
 
       var pos = this.toCart( r , t , p );
       mesh.position.set( pos[0] , pos[1] , pos[2])// = position;
-     
+    
+      var n = mesh.position.clone().normalize();
+      mesh.lookAt( mesh.position.clone().add( n ) );
+      mesh.ro
       //mesh.rotation.x = Math.random();
       //mesh.rotation.y = Math.random();
       //mesh.rotation.z = Math.random();
@@ -687,8 +684,9 @@
 
         var n = p.clone().normalize();
 
-        var fPos = p.clone().add( n.multiplyScalar(this.params.springDist) );
+        var fPos = p.clone().add( n.multiplyScalar(((slice) * 16) *this.params.springDist) );
        
+        fPos  = p.clone();
         //consol.e.
        /* var x = r * Math.cos( theta );
         var y = r * Math.sin( theta );
