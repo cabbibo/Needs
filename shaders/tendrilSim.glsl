@@ -136,6 +136,8 @@ void main(){
   float current   = active.z;
   float playing   = current * selected;
 
+  float audioPower = length( texture2D( t_audio, vec2( vUv.x , 0.0 ) ));
+  
 
   float column = vUv.x;
 
@@ -189,7 +191,7 @@ void main(){
     //force += 
     force -= flow * slice * uFlowMultiplier;
 
-    force += floating * upwardsForce * uFloatForce;
+    force += floating * upwardsForce * uFloatForce * audioPower;
 
     force += getRepelForce( pos );
 
@@ -226,7 +228,7 @@ void main(){
    // force += vec3( columnDif.xy * 10. , 0. )*10.;
     force -= flow * slice * uFlowMultiplier;
 
-    force += floating * upwardsForce * uFloatForce;
+    force += floating * upwardsForce * uFloatForce * audioPower;
 
     force += getRepelForce( pos );
 
@@ -251,8 +253,9 @@ void main(){
       vel = normalize( vel ) * maxVel;
 
     }
+
     
-    newPos = pos + vel * fDT * ((playing * 4.)+1.);
+    newPos = pos + vel * fDT;// ((playing * 4.)+1.);
 
    /* float l = length(newPos);
     if( l <= 305. ){

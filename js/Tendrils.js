@@ -178,7 +178,7 @@
     this.physicsRenderer.setUniform( 'timer'  , timer );
 
 
-    this.normalTexture = THREE.ImageUtils.loadTexture('../img/normals/moss_normal_map.jpg');
+    this.normalTexture = THREE.ImageUtils.loadTexture('img/normals/moss_normal_map.jpg');
 
     this.normalTexture.wrapS = THREE.RepeatWrapping;
     this.normalTexture.wrapT = THREE.RepeatWrapping;
@@ -189,9 +189,9 @@
     var headMultiplier = {type:"f" ,value: this.params.headMultiplier}
 
 
-    var t_iri = THREE.ImageUtils.loadTexture( '../img/iri/red.png' );
-    var t_iri = THREE.ImageUtils.loadTexture( '../img/iri/turq.png' );
-    var t_iri2 = THREE.ImageUtils.loadTexture( '../img/iri/pinkRed.png' );
+    var t_iri = THREE.ImageUtils.loadTexture( 'img/iri/red.png' );
+    var t_iri = THREE.ImageUtils.loadTexture( 'img/iri/turq.png' );
+    var t_iri2 = THREE.ImageUtils.loadTexture( 'img/iri/pinkRed.png' );
 
 
     var uniforms = {

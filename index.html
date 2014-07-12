@@ -123,6 +123,77 @@ z-index: 999;
   }
 
 
+
+  var t_red         = THREE.ImageUtils.loadTexture( 'img/iri/red.png' );
+  var t_turq        = THREE.ImageUtils.loadTexture( 'img/iri/turq.png' );
+  var t_pinkRed     = THREE.ImageUtils.loadTexture( 'img/iri/pinkRed.png' );
+  var t_gold        = THREE.ImageUtils.loadTexture( 'img/iri/gold.png' );
+  var t_combo       = THREE.ImageUtils.loadTexture( 'img/iri/combo.png' );
+  var t_yellowPurp  = THREE.ImageUtils.loadTexture( 'img/iri/neonYellowPurp.png' );
+  var t_wet         = THREE.ImageUtils.loadTexture( 'img/iri/greenBluePurp.png' );
+  var t_orangeTurq  = THREE.ImageUtils.loadTexture( 'img/iri/orangeTurq.png' );
+
+  var n_carbon = THREE.ImageUtils.loadTexture( 'img/normals/carbonFiber.png' );
+  var n_snow   = THREE.ImageUtils.loadTexture( 'img/normals/ice-snow.jpg' );
+  var n_sand   = THREE.ImageUtils.loadTexture( 'img/normals/sand.png' );
+  var n_rock   = THREE.ImageUtils.loadTexture( 'img/normals/rock.png' );
+  var n_ice    = THREE.ImageUtils.loadTexture( 'img/normals/7723-normal.jpg' );
+  var n_moss   = THREE.ImageUtils.loadTexture( 'img/normals/moss_normal_map.jpg' );
+
+  var PARAMS = {
+
+
+    // Sim
+    maxVelTendrils:1000,
+    audioPowerSim:2,
+    audioAmountSim:.75,
+    springForce:100,
+    springDist:100,
+    repelMultiplier:50,
+    flowMultiplier:0,
+
+    repelRadius: 500, // TODO: need to loop through and set
+
+    //TendrilRender
+    girth:5,
+    headMultiplier:2,
+    audioPowerRender:2,
+    audioAmountRender:.75,
+    springForce:100,
+    springDist:100,
+    repelMultiplier:50,
+    flowMultiplier:0,
+
+    texScale: .1,
+    normalScale: 5.,
+
+    headIri: t_red,
+    headNormal: n_ice,
+  
+    shaftIri: t_orangTurq,
+    shaftNormal: n_moss,
+
+
+
+    // REPEL balls
+    repelRadius: 500,
+    
+    ballsMaxVel: 500,
+
+    ballsIri: t_wet,
+    ballsNormal: n_moss
+    ballsCenterAttract: 100,
+    ballsSpringLength: 1000,
+    ballsDampening: .9999
+
+
+
+
+  }
+
+
+  // on repel radius change, loop through repel radii
+
   function init(){
 
     controller = new Leap.Controller();
