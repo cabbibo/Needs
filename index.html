@@ -31,23 +31,25 @@ z-index: 999;
 </head>
 <body>
 
-  <div id="loading"> LOADING </div>
+  <div id="loading"> LOADING MODELS </div>
 
-<script src = "lib/leap.js"                ></script>
-<script src = "lib/underscore.js"      ></script>
-<script src = "lib/three.js"               ></script>
-<script src = "lib/jquery.min.js"          ></script>
-<script src = "lib/stats.min.js"           ></script>
-<script src = "lib/TrackballControls.js"   ></script>
-<script src = "lib/ShaderLoader.js"        ></script>
-<script src = "lib/Stream.js"              ></script>
-<script src = "lib/UserAudio.js"           ></script>
-<script src = "lib/AudioController.js"     ></script>
-<script src = "lib/AudioTexture.js"        ></script>
-<script src = "lib/PhysicsRenderer.js"      ></script>
+<script src = "lib/leap.js"               ></script>
+<script src = "lib/underscore.js"         ></script>
+<script src = "lib/three.js"              ></script>
+<script src = "lib/jquery.min.js"         ></script>
+<script src = "lib/stats.min.js"          ></script>
+<script src = "lib/TrackballControls.js"  ></script>
+<script src = "lib/ShaderLoader.js"       ></script>
+<script src = "lib/Stream.js"             ></script>
+<script src = "lib/UserAudio.js"          ></script>
+<script src = "lib/AudioController.js"    ></script>
+<script src = "lib/AudioTexture.js"       ></script>
+<script src = "lib/PhysicsRenderer.js"    ></script>
 
-<script src = "js/ObjectRotator.js"></script>
-<script src = "js/Tendrils.js"        ></script>
+<script src = "js/ObjectRotator.js"       ></script>
+<script src = "js/Tendrils.js"            ></script>
+<script src = "js/Link.js"                ></script>
+<script src = "js/mechanics.js"           ></script>
 
 
 <script>
@@ -82,16 +84,16 @@ z-index: 999;
 
   var audioController = new AudioController();
 
- // audioController.mute.gain.value = 0;
+  audioController.mute.gain.value = 0;
 
-  var stream = new Stream(  'audio/slowDance.mp3',audioController  );
+ // var stream = new Stream(  'audio/you.mp3',audioController  );
 
-  /*var userMedia = new UserAudio( audioController );
+  var userMedia = new UserAudio( audioController );
   console.log( userMedia );
 
   userMedia.onStreamCreated = function(){
     onLoad();
-  }*/
+  }
   
  
   var timer = { type:"f" , value:0 }
@@ -105,12 +107,10 @@ z-index: 999;
 
  var shaders = new ShaderLoader('shaders');
 
-  shaders.load( 'fs-fire' , 'fire' , 'fragment' );
-  shaders.load( 'vs-fire' , 'fire' , 'vertex' );
-  shaders.load( 'fs-uvIri' , 'uvIri' , 'fragment' );
-  shaders.load( 'vs-uvIri' , 'uvIri' , 'vertex' );
-  shaders.load( 'fs-planet' , 'planet' , 'fragment' );
-  shaders.load( 'vs-planet' , 'planet' , 'vertex' );
+  shaders.load( 'fs-center' , 'center' , 'fragment' );
+  shaders.load( 'vs-center' , 'center' , 'vertex' );
+  shaders.load( 'fs-link' , 'link' , 'fragment' );
+  shaders.load( 'vs-link' , 'link' , 'vertex' );
   shaders.load( 'fs-tendril' , 'tendril' , 'fragment' );
   shaders.load( 'vs-tendril' , 'tendril' , 'vertex' );
   shaders.load( 'fs-tendrilLine' , 'tendrilLine' , 'fragment' );
@@ -121,8 +121,6 @@ z-index: 999;
   shaders.shaderSetLoaded = function(){
    onLoad();
   }
-
-
 
   var t_red         = THREE.ImageUtils.loadTexture( 'img/iri/red.png' );
   var t_turq        = THREE.ImageUtils.loadTexture( 'img/iri/turq.png' );
@@ -170,7 +168,7 @@ z-index: 999;
     headIri: t_red,
     headNormal: n_ice,
   
-    shaftIri: t_orangTurq,
+    shaftIri: t_orangeTurq,
     shaftNormal: n_moss,
 
 
@@ -235,94 +233,30 @@ z-index: 999;
     // Making sure our renderer is always the right size
     window.addEventListener( 'resize', onWindowResize , false );
 
-
+    initMechanics();
   
 
-    var tNormal = THREE.ImageUtils.loadTexture( 'img/normals/7723-normal.jpg' );
-    tNormal.wrapS = THREE.RepeatWrapping; 
-    tNormal.wrapT = THREE.RepeatWrapping; 
-    console.log( 'TNOMAL');
-    console.log( tNormal );
-
-    var tLookup = THREE.ImageUtils.loadTexture( 'img/iriLookup.png' );
-
-    var color1 = new THREE.Vector3( 1. , 1. , .3 );
-    var color2 = new THREE.Vector3( 5. , 2. , 0 );
-    var color3 = new THREE.Vector3( 1. , .4 , 0. );
-    var color4 = new THREE.Vector3( 1.8 , .4 , .0 );
-
-    
-    var uniforms = {
-
-      lightPos: { type:"v3" , value: new THREE.Vector3(100,0,0)},
-      tNormal:{type:"t",value:tNormal},
-      time:timer,
-      tLookup:{ type:"t" , value: tLookup },
-      t_audio:{ type:"t" , value: audioController.texture },
-      color1:{ type:"v3" , value: color1 },
-      color2:{ type:"v3" , value: color2 },
-      color3:{ type:"v3" , value: color3 },
-      color4:{ type:"v3" , value: color4 },
-      texScale:{type:"f" , value:.001},
-      normalScale:{type:"f" , value:.8}
-
-
+   
+    for( var i = 0; i< 9; i++ ){
+      var l = new Link(i);
+      l.activate();
     }
 
-    vertexShader   = shaders.vertexShaders.uvIri;
-    fragmentShader = shaders.fragmentShaders.uvIri;
 
-    uvMat = new THREE.ShaderMaterial({
-
-      uniforms: uniforms,
-      vertexShader: vertexShader,
-      fragmentShader: fragmentShader
-
-    });
-
+    // Center repulsion
     repelPositions.push( new THREE.Vector3() );
     repelVelocities.push( new THREE.Vector3() );
     repelRadii.push( 340 );
+    
 
-    var geo =  new THREE.CubeGeometry( 200 , 200 , 200 ) 
-    var geo =  new THREE.IcosahedronGeometry( 200 , 2 ) 
-    for( var i = 0; i< 9; i++ ){
+    //camera repulsion
+    repelPositions.push( camera.position );
+    repelVelocities.push( new THREE.Vector3() );
+    repelRadii.push( 340 );
 
-        var repelObject = {}
+    console.log( 'EFASD');
+    console.log( repelRadii.length );
 
-
-        var theta = (i / 10) * 2 * Math.PI;
-
-        var x = 1000 * Math.cos( theta );
-        var z = 1000 * Math.sin( theta );
-
-        repelObject.mesh = new THREE.Mesh( geo , uvMat );
-        repelObject.velocity = new THREE.Vector3(
-          ( Math.random() - .5 ) * 100,
-          ( Math.random() - .5 ) * 100,
-          ( Math.random() - .5 ) * 100
-        );
-        repelObject.position = new THREE.Vector3(
-         x,//(Math.random() -.5 ) * 4000,
-         0,//(Math.random() -.5 ) * 4000,
-         z//(Math.random() -.5 )  * 4000
-        );
-
-
-        repelObject.mesh.rotation.y = -theta - Math.PI /2;
-        repelObject.mesh.position = repelObject.position;
-
-        repelObject.radius = 500;
-
-        repelPositions.push(  repelObject.position );
-        repelVelocities.push( repelObject.velocity );
-        repelRadii.push(      repelObject.radius );
-
-        repelObjects.push( repelObject );
-
-        scene.add( repelObject.mesh );
-
-      }
 
 
     tendrils = new Tendrils({
@@ -331,6 +265,7 @@ z-index: 999;
       repelVelocities: repelVelocities,
       repelRadii: repelRadii,
       
+
     });
 
     tendrils.activate();
@@ -351,69 +286,37 @@ z-index: 999;
     dT.value = clock.getDelta();
     timer.value += dT.value;
 
-    for( var i = 0; i < repelObjects.length; i++ ){
+    updateMechanics();
 
-      var rO = repelObjects[i];
-
-      var force = new THREE.Vector3();
-
+    if( !LINK_INTERSECTED ){
       
-      for( var j = 0; j < repelObjects.length; j++ ){
-        if( j != i ){
+      for( var i = 0; i < LINKS.length; i++ ){
 
-
-          var rO1 = repelObjects[j];
-
-          TMP_VECTOR.copy( rO.position );
-          TMP_VECTOR.sub( rO1.position );
-
-          var l = TMP_VECTOR.length();
-          TMP_VECTOR.normalize();
-
-          TMP_VECTOR.multiplyScalar( l - 2000);
-          force.sub( TMP_VECTOR.multiplyScalar( .001) );
-          //var dif =  
-
-
-        }
-      }
-
-      TMP_VECTOR.copy( rO.position );
-      TMP_VECTOR.sub( new THREE.Vector3() );
-
-      var l = TMP_VECTOR.length();
-      force.sub(TMP_VECTOR.multiplyScalar( .000001 * l ) );
-
-      rO.velocity.add( force );
-
-      if( rO.position.length() < 300 ){
-
-        rO.position.normalize();
-        rO.position.multiplyScalar( 300 );
-
-        rO.velocity.multiplyScalar( -1 );
+        LINKS[i].updatePhysics();
 
       }
 
-      if( rO.velocity.length() > MAX_VEL ){
+      for( var i = 0; i < LINKS.length; i++ ){
 
-        rO.velocity.normalize().multiplyScalar( MAX_VEL );
+        LINKS[i].updatePosition();
 
       }
-      
-     rO.position.add( rO.velocity );
-     // rO.velocity.multiplyScalar( .99 );
-
 
     }
-
-
+   
     tendrils.update();
     stats.update();
 
     renderer.render( scene , camera );
 
     requestAnimationFrame( animate );
+
+  }
+
+  function intersectLinks(){
+
+
+
 
   }
 
@@ -436,7 +339,7 @@ z-index: 999;
 
       init();
       animate();
-      stream.play();
+      //stream.play();
 
     }
 

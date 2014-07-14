@@ -18,9 +18,9 @@ uniform float uRepelMultiplier; // multiplier
 uniform float uDampening; // multiplier
 uniform float maxVel;
 
-uniform vec3 repelPositions[10];
-uniform vec3 repelVelocities[10];
-uniform float repelRadii[10];
+uniform vec3 repelPositions[12];
+uniform vec3 repelVelocities[12];
+uniform float repelRadii[12];
 
 uniform float xySpacing;
 uniform float springDistance;
@@ -66,7 +66,7 @@ vec3 getRepelForce( vec3 p ){
 
   vec3 repelForce = vec3( 0. );
   
-  for( int i = 0; i < 10; i++ ){
+  for( int i = 0; i < 12; i++ ){
 
     vec3 repelPosition = repelPositions[i];
     vec3 repelVelocity = repelVelocities[i];

@@ -226,7 +226,7 @@ void main(){
  
   vNormal = normalize(point - centerOfCircle);
 
-  vNormal = (uMVMat * vec4( vNormal , 1.0 )).xyz;
+  //vNormal = (uMVMat * vec4( vNormal , 1.0 )).xyz;
 
   vView = uMVMat[3].xyz;
  // vNormal = normalMatrix *  vNormal ;
