@@ -31,7 +31,7 @@ z-index: 999;
 </head>
 <body>
 
-  <div id="loading"> LOADING MODELS </div>
+  <div id="loading"> LOADING </div>
 
 <script src = "lib/leap.js"                ></script>
 <script src = "lib/underscore.js"      ></script>
@@ -82,16 +82,16 @@ z-index: 999;
 
   var audioController = new AudioController();
 
-  audioController.mute.gain.value = 0;
+ // audioController.mute.gain.value = 0;
 
-  var stream = new Stream(  '../audio/you.mp3',audioController  );
+  var stream = new Stream(  'audio/slowDance.mp3',audioController  );
 
-  var userMedia = new UserAudio( audioController );
+  /*var userMedia = new UserAudio( audioController );
   console.log( userMedia );
 
   userMedia.onStreamCreated = function(){
     onLoad();
-  }
+  }*/
   
  
   var timer = { type:"f" , value:0 }
@@ -436,7 +436,7 @@ z-index: 999;
 
       init();
       animate();
-      //stream.play();
+      stream.play();
 
     }
 
