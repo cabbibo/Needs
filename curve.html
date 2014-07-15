@@ -1,0 +1,98 @@
+
+<html>
+
+<head>
+  <style>
+
+    html{ color:#fff; background:#000; }
+
+    #container{
+      width      : 100%;
+      height     : 100%;
+      position   : absolute;
+      top        : 0px;
+      left       : 0px;
+      background : #000;
+    }
+
+  </style>
+</head>
+<body>
+  
+<script src = "lib/three.js"              ></script>
+<script src = "lib/TrackballControls.js"  ></script>
+
+<script src = "js/LinkArch.js"            ></script>
+
+<script>
+
+  var sceneSize = 5000;
+  init();
+  animate();
+
+function init(){
+
+    scene = new THREE.Scene();
+    
+    camera = new THREE.PerspectiveCamera( 
+      50 ,
+      window.innerWidth / window.innerHeight,
+      sceneSize / 100 ,
+      sceneSize * 40
+    );
+
+    // placing our camera position so it can see everything
+    camera.position.z = sceneSize;
+
+    camera.velocity = new THREE.Vector3();
+
+    controls = new THREE.TrackballControls( camera );
+
+    // Getting the container in the right location
+    container     = document.createElement( 'div' );
+    container.id  = 'container';
+    
+    document.body.appendChild( container );
+
+
+    // Setting up our Renderer
+    renderer = new THREE.WebGLRenderer();
+
+    renderer.setSize( window.innerWidth, window.innerHeight );
+    container.appendChild( renderer.domElement );
+
+
+    // Making sure our renderer is always the right size
+    window.addEventListener( 'resize', onWindowResize , false );
+
+    var linkArch = new LinkArch();
+
+}
+
+
+function animate(){
+
+  controls.update();
+  renderer.render( scene , camera );
+
+  requestAnimationFrame( animate );
+
+}
+
+// Resets the renderer to be the proper size
+function onWindowResize(){
+
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+
+  renderer.setSize( window.innerWidth, window.innerHeight );
+
+}
+
+</script>
+</body>
+</html>
+
+
+
+

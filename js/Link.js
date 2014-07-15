@@ -111,23 +111,36 @@ Link.prototype.hoverOver = function(){
   repelRadii[ 10 ] = 7000;
   this.radius = 2000;
   repelRadii[ this.id ] = this.radius;
-  console.log( 'HOVER OVER' );
   this.hovered = true;
 
 
   this.linkLine.geometry.vertices[1]=  this.position.clone();
-  this.linkLine.geometry.vertices[1].add(  new THREE.Vector3(0 , 300,0)  );
+  this.linkLine.geometry.vertices[1].add(  new THREE.Vector3(500 , 500,0)  );
   this.linkLine.geometry.vertices[1].z = 1500;
-  this.linkLine.geometry.vertices[1].y = 1500;
-  this.linkLine.geometry.vertices[1].x = 1500;
+  //this.linkLine.geometry.vertices[1].y = 1500;
+  //this.linkLine.geometry.vertices[1].x = 1500;*/
 
   this.linkLine.geometry.vertices[2] =  this.position.clone();
-  this.linkLine.geometry.vertices[2].add( new THREE.Vector3(0 , 300,0) );
+  this.linkLine.geometry.vertices[2].add( new THREE.Vector3(1200 , 500,0) );
   this.linkLine.geometry.vertices[2].z = 1500;
-  this.linkLine.geometry.vertices[2].y = 1500;
-  this.linkLine.geometry.vertices[2].x = 2500;
+  //this.linkLine.geometry.vertices[2].y = 1500;
+  //this.linkLine.geometry.vertices[2].x = 2500;*/
 
   this.linkLine.geometry.verticesNeedUpdate = true;
+
+  var v = this.linkLine.geometry.vertices[2].clone();
+
+  projector.unprojectVector( v , camera );
+  console.log( v );
+
+  v.sub( camera.position  );
+  console.log( v );
+
+  var x = ( v.x  / window.innerWidth ) - 1;
+  console.log( x );
+  
+  //    mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+//      mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 
 }
 
@@ -136,7 +149,6 @@ Link.prototype.hoverOut = function(){
   repelRadii[ 10 ] = 100;
   this.radius = this.params.repelRadius;
   repelRadii[ this.id ] = this.radius;
-  console.log( 'HOVER OUT' );
   this.hovered = false;
 
 
