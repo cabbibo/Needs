@@ -38,29 +38,63 @@
   //init();
   //animate();
 
+  var clock = new THREE.Clock();
   
   var audioController = new AudioController();
 
-  //audioController.mute.gain.value = 0;
+ // audioController.mute.gain.value = 0;
+ 
+  var timer = { type:"f" , value:0 }
+  var dT = { type:"f" , value:0 }
+  var stream = new Stream(  'audio/needs.mp3',audioController  );
 
-var stream = new Stream(  'audio/slowDance.mp3',audioController  );
+  var userMedia = new UserAudio( audioController );
+  console.log( userMedia );
 
+ /* userMedia.onStreamCreated = function(){
 
+    init();
+    animate();
+
+  }*/
+  
    var shaders = new ShaderLoader('shaders');
 
 
   shaders.load( 'vs-curve' , 'curve' , 'vertex' );
   shaders.load( 'fs-curve' , 'curve' , 'fragment' );
-
-  var t_combo       = THREE.ImageUtils.loadTexture( 'img/iri/combo.png' );
   
+  shaders.load( 'vs-bee' , 'bee' , 'vertex' );
+  shaders.load( 'fs-bee' , 'bee' , 'fragment' );
+
   shaders.shaderSetLoaded = function(){
 
-    init();
+     init();
     animate();
     stream.play();
 
   }
+
+  var t_combo = THREE.ImageUtils.loadTexture( 'img/iri/t_combo.png' );
+
+  var t_red         = THREE.ImageUtils.loadTexture( 'img/iri/red.png' );
+  var t_turq        = THREE.ImageUtils.loadTexture( 'img/iri/turq.png' );
+  var t_pinkRed     = THREE.ImageUtils.loadTexture( 'img/iri/pinkRed.png' );
+  var t_gold        = THREE.ImageUtils.loadTexture( 'img/iri/gold.png' );
+  var t_combo       = THREE.ImageUtils.loadTexture( 'img/iri/combo.png' );
+  var t_yellowPurp  = THREE.ImageUtils.loadTexture( 'img/iri/neonYellowPurp.png' );
+  var t_wet         = THREE.ImageUtils.loadTexture( 'img/iri/greenBluePurp.png' );
+  var t_orangeTurq  = THREE.ImageUtils.loadTexture( 'img/iri/orangeTurq.png' );
+
+  var n_carbon = THREE.ImageUtils.loadTexture( 'img/normals/carbonFiber.png' );
+  var n_snow   = THREE.ImageUtils.loadTexture( 'img/normals/ice-snow.jpg' );
+  var n_sand   = THREE.ImageUtils.loadTexture( 'img/normals/sand.png' );
+  var n_rock   = THREE.ImageUtils.loadTexture( 'img/normals/rock.png' );
+  var n_ice    = THREE.ImageUtils.loadTexture( 'img/normals/7723-normal.jpg' );
+  var n_moss   = THREE.ImageUtils.loadTexture( 'img/normals/moss_normal_map.jpg' );
+
+
+
 function init(){
 
     scene = new THREE.Scene();
@@ -97,20 +131,20 @@ function init(){
     window.addEventListener( 'resize', onWindowResize , false );
 
    
-    var tNormal   = THREE.ImageUtils.loadTexture( 'img/normals/moss_normal_map.jpg' );
+    var tNormal   = n_ice;
 
     tNormal.wrapS = THREE.RepeatWrapping; 
     tNormal.wrapT = THREE.RepeatWrapping; 
   
     var uniforms = {
 
-      lightPos: { type:"v3" , value:camera.position },
+      lightPos: { type:"v3" , value: new THREE.Vector3() },
       tNormal:{type:"t",value:tNormal},
       time:timer,
-      t_iri:{ type:"t" , value: t_combo },
+      t_iri:{ type:"t" , value: t_turq },
       t_audio:{ type:"t" , value: audioController.texture },
       texScale:{type:"f" , value:.001},
-      normalScale:{type:"f" , value:.8},
+      normalScale:{type:"f" , value:.3},
 
     }
 
@@ -125,13 +159,67 @@ function init(){
 
     });
 
-    var linkArch = new LinkArch();
+    var linkArch = new LinkArch( material );
+
+
+    CUBE_VEL = new THREE.Vector3( 0 , 1 , 0 );
+    var tNormal   = n_moss;
+
+    tNormal.wrapS = THREE.RepeatWrapping; 
+    tNormal.wrapT = THREE.RepeatWrapping; 
+  
+    var uniforms = {
+
+      lightPos: { type:"v3" , value: new THREE.Vector3() },
+      tNormal:{type:"t",value:tNormal},
+      time:timer,
+      t_iri:{ type:"t" , value: t_yellowPurp },
+      t_audio:{ type:"t" , value: audioController.texture },
+      texScale:{type:"f" , value:.01},
+      normalScale:{type:"f" , value:2.3},
+      vVel:{ type:"v3" , value: CUBE_VEL }
+    
+    }
+
+    vertexShader   = shaders.vertexShaders.bee;
+    fragmentShader = shaders.fragmentShaders.bee;
+
+    var material = new THREE.ShaderMaterial({
+
+      uniforms: uniforms,
+      vertexShader: vertexShader,
+      fragmentShader: fragmentShader
+
+    });
+
+
+    //var g = new THREE.BoxGeometry( 300 , 300 ,300 ,100,100,100 );
+    var g = new THREE.IcosahedronGeometry( 3000 , 6 );
+    g.computeFaceNormals();
+    g.computeVertexNormals();
+    var mesh = new THREE.Mesh( 
+    g,
+    material
+    );
+
+    //mesh.position.y = 2000;
+    //scene.add( mesh );
 
 }
 
 
 function animate(){
 
+
+  CUBE_VEL.x = Math.sin( timer.value * .1 );
+  CUBE_VEL.y = Math.sin( timer.value * .3);
+  CUBE_VEL.z = Math.sin( timer.value * .5);
+
+  CUBE_VEL.normalize();
+
+   audioController.update();
+    dT.value = clock.getDelta();
+    timer.value += dT.value;
   controls.update();
   renderer.render( scene , camera );
 

@@ -49,7 +49,7 @@ void main(){
 
 
   // FROM @thespite
-  /*vec3 n = normalize( vNorm.xyz );
+  vec3 n = normalize( vNorm.xyz );
   vec3 blend_weights = abs( n );
   blend_weights = ( blend_weights - 0.2 ) * 7.;  
   blend_weights = max( blend_weights, 0. );
@@ -79,28 +79,8 @@ void main(){
   normalTex.y *= -1.;
   normalTex = normalize( normalTex );
   mat3 tsb = mat3( normalize( blended_tangent ), normalize( cross( vNorm, blended_tangent ) ), normalize( vNorm ) );
- */
   //vec3 bump = texture2D( tNormal , vUv ).xyz;
-  //vec3 finalNormal = tsb * normalTex;
-
-    vec3 q0 = dFdx( vPos.xyz );
-    vec3 q1 = dFdy( vPos.xyz );
-    vec2 st0 = dFdx( vUv.st );
-    vec2 st1 = dFdy( vUv.st );
-
-    vec3 S = normalize(  q0 * st1.t - q1 * st0.t );
-    vec3 T = normalize( -q0 * st1.s + q1 * st0.s );
-    vec3 N = normalize( vNorm );
-
-    vec3 mapN = texture2D( tNormal, vUv ).xyz * 2.0 - 1.0;
-    mapN.xy = normalScale * mapN.xy;
-   
-
-    
-    mat3 tsn = mat3( S, T, N );
-
-    //vec3 finalNormal = vNorm;
-    vec3 finalNormal =  normalize( tsn * mapN );
+  vec3 finalNormal = tsb * normalTex;
 
 
  // vec3 finalNormal = normalize(vNorm  + 1. *  bump);
@@ -117,36 +97,13 @@ void main(){
   float newDot = dot( normalize( nNormal ), nView );
   float inverse_dot_view = 1.0 - max( newDot  , 0.0);
 
-  vec3 p1 = color1;
-  vec3 p2 = color2;
-  vec3 p3 = color3;
-  vec3 p4 = color4;
-  
-  vec3 v1 = vec3(0.);
-  vec3 v2 = .2  * p1-p3;
-  vec3 v3 = .5  * p2-p4;
-  vec3 v4 = vec3(0.);
-
-  vec3 c1 = p1;
-  vec3 c2 = p2 + v1/3.;
-  vec3 c3 = p3 - v2/3.;
-  vec3 c4 = p4;
-
-  float s  = snoise( vPos * .0001 );
-  //float s1 = snoise( vPos * .004 );
-  
-
-  float total = s;
-
-  total = (cos(total) + 1.)/2.;
-
  // vec3 lookup = texture2D( t_iri , vec2( inverse_dot_view * facingRatio , 0. ) ).xyz;
-  vec3 lookup = cubicCurve( inverse_dot_view * facingRatio, c1 , c2 , c3 , c4 );
+  vec3 lookup = texture2D( t_iri , vec2(inverse_dot_view * facingRatio ,  0.) ).xyz;
 
 
  // vec3 lookup = texture2D( tLookup , vec2( inverse_dot_view * facingRatio,0. )).xyz;
   
-  vec3 aColor = texture2D( t_audio , vec2( inverse_dot_view * facingRatio,0. )).xyz;
+  vec3 aColor = texture2D( t_audio , vec2( 1.-inverse_dot_view * facingRatio,0. )).xyz;
 
  // float noise = snoise( normalize(vPos) );
 
@@ -158,7 +115,7 @@ void main(){
 
   //vec3 norm = ((finalNormal * .3 + .7) * facingRatio)*.1;
   vec3 norm = vec3(abs(finalNormal.x));
-  gl_FragColor = vec4(.6 * lookup + .6 * aColor + .6 * nonFacing, 1.0 );
+  gl_FragColor = vec4(.8 * lookup * aColor + .6 * nonFacing, 1.0 );
   //gl_FragColor = vec4(facing, 1.0 )
   //gl_FragColor = vec4( vUv.x , vUv.y , .5 , 1.0 );
   //gl_FragColor = vec4( finalNormal , 1.0 );

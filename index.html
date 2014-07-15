@@ -123,6 +123,8 @@ z-index: 999;
 
   shaders.load( 'fs-center' , 'center' , 'fragment' );
   shaders.load( 'vs-center' , 'center' , 'vertex' );
+  shaders.load( 'fs-curve' , 'curve' , 'fragment' );
+  shaders.load( 'vs-curve' , 'curve' , 'vertex' );
   shaders.load( 'fs-link' , 'link' , 'fragment' );
   shaders.load( 'vs-link' , 'link' , 'vertex' );
   shaders.load( 'fs-tendril' , 'tendril' , 'fragment' );
@@ -289,7 +291,36 @@ z-index: 999;
     controller.connect();
 
 
-    var linkArch = new LinkArch();
+    
+    var tNormal   = THREE.ImageUtils.loadTexture( 'img/normals/moss_normal_map.jpg' );
+
+    tNormal.wrapS = THREE.RepeatWrapping; 
+    tNormal.wrapT = THREE.RepeatWrapping; 
+  
+    var uniforms = {
+
+      lightPos: { type:"v3" , value:new THREE.Vector3() },
+      tNormal:{type:"t",value:tNormal},
+      time:timer,
+      t_iri:{ type:"t" , value: t_yellowPurp },
+      t_audio:{ type:"t" , value: audioController.texture },
+      texScale:{type:"f" , value:.001},
+      normalScale:{type:"f" , value:.8},
+
+    }
+
+    vertexShader   = shaders.vertexShaders.curve;
+    fragmentShader = shaders.fragmentShaders.curve;
+
+    var material = new THREE.ShaderMaterial({
+
+      uniforms: uniforms,
+      vertexShader: vertexShader,
+      fragmentShader: fragmentShader
+
+    });
+
+    var linkArch = new LinkArch( material );
 
   }
 
@@ -305,7 +336,7 @@ z-index: 999;
 
     updateMechanics();
 
-    if( !LINK_INTERSECTED ){
+    //if( !LINK_INTERSECTED ){
       
       for( var i = 0; i < LINKS.length; i++ ){
 
@@ -319,7 +350,7 @@ z-index: 999;
 
       }
 
-    }
+   // }
    
     tendrils.update();
     stats.update();
