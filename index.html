@@ -3,7 +3,12 @@
 <head>
   <style>
 
-    html{ color:#fff; background:#000; }
+    
+    @font-face {
+      font-family: "GeoSans";
+      src: url("lib/GeosansLight.ttf");
+    }
+    html{ color:#fff; background:#000; font-family:"GeoSans" }
 
     #container{
       width      : 100%;
@@ -58,6 +63,7 @@ z-index: 999;
 <script src = "lib/AudioController.js"    ></script>
 <script src = "lib/AudioTexture.js"       ></script>
 <script src = "lib/PhysicsRenderer.js"    ></script>
+<script src = "lib/TextCreator.js"        ></script>
 
 <script src = "js/ObjectRotator.js"       ></script>
 <script src = "js/Tendrils.js"            ></script>
@@ -67,6 +73,36 @@ z-index: 999;
 
 
 <script>
+
+
+  var SONG_PARAMS = [
+
+    { 
+      title: 'At Night / Miss You',
+      file:'audio/atNight.mp3',
+    },
+    
+    { 
+      title: 'Crush #4 / Slow Dance',
+      file:'audio/slowDance.mp3',
+    },
+    
+    { 
+      title: 'Only Used To',
+      file:'audio/only.mp3',
+    },
+    
+    { 
+      title: 'Give You',
+      file:'audio/giveYou.mp3',
+    },
+    
+    { 
+      title: 'Needs',
+      file:'audio/needs.mp3',
+    },
+
+  ]
 
   console.log('Loading');
 
@@ -98,16 +134,16 @@ z-index: 999;
 
   var audioController = new AudioController();
 
-  audioController.mute.gain.value = 0;
+ // audioController.mute.gain.value = 0;
 
  // var stream = new Stream(  'audio/you.mp3',audioController  );
 
-  var userMedia = new UserAudio( audioController );
+ /* var userMedia = new UserAudio( audioController );
   console.log( userMedia );
 
   userMedia.onStreamCreated = function(){
     onLoad();
-  }
+  }*/
   
  
   var timer = { type:"f" , value:0 }
@@ -209,6 +245,8 @@ z-index: 999;
   // on repel radius change, loop through repel radii
 
   function init(){
+   
+    textCreator = new TextCreator( 100 );
 
     controller = new Leap.Controller();
 
@@ -254,8 +292,8 @@ z-index: 999;
   
 
    
-    for( var i = 0; i< 9; i++ ){
-      var l = new Link(i);
+    for( var i = 0; i< SONG_PARAMS.length; i++ ){
+      var l = new Link(i , SONG_PARAMS.length , SONG_PARAMS[i] );
       l.activate();
     }
 
@@ -270,6 +308,8 @@ z-index: 999;
     repelPositions.push( camera.position );
     repelVelocities.push( new THREE.Vector3() );
     repelRadii.push( 340 );
+
+    camera.repelID = repelPositions.length - 1;
 
     console.log( 'EFASD');
     console.log( repelRadii.length );
@@ -319,8 +359,6 @@ z-index: 999;
       fragmentShader: fragmentShader
 
     });
-
-    var linkArch = new LinkArch( material );
 
   }
 

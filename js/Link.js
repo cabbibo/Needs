@@ -1,8 +1,10 @@
 
 var LINKS = [];
 var LINK_MESHES = [];
+var LINK_TITLE_MESHES = [];
 
 var LINK_INTERSECTED;
+var LINK_TITLE_INTERSECTED;
 
 
 var LINK_GEO = new THREE.IcosahedronGeometry( 300 , 2 );
@@ -10,9 +12,10 @@ var LINK_GEO = new THREE.IcosahedronGeometry( 300 , 2 );
 var LINK_MAT;
 
 
-function Link( id , params ){
+function Link( id , total , params ){
 
   this.id = id;
+  this.idNormal = id / total;
 
   this.params = _.defaults( params || {} , {
 
@@ -21,6 +24,7 @@ function Link( id , params ){
     videoLink:"https://www.youtube.com/watch?v=-8mzWkuOxz8",
     note:'BLAH',
 
+    file:'audio/needs.mp3',
     springDistance: 2000,
     dampening: .999999,
     springForceMultiplier: .001,
@@ -34,6 +38,8 @@ function Link( id , params ){
 
   });
 
+  this.stream = new Stream( this.params.file , audioController ); 
+
   this.position = new THREE.Vector3(
     (Math.random() -.5 ) * 1000,
     (Math.random() -.5 ) * 1000,
@@ -45,6 +51,30 @@ function Link( id , params ){
     ( Math.random() - .5 ) * 100,
     ( Math.random() - .5 ) * 100
   );
+
+
+  this.titlePosition = new THREE.Vector3();
+  this.titlePosition.x = 2000;
+  this.titlePosition.y = (this.idNormal - .5 ) * 3000; 
+
+  this.titleLeft = this.titlePosition.x;
+
+
+  this.titleMesh = textCreator.createMesh( this.params.title ,{
+   
+    size: 300
+    
+  });
+
+  this.titleMesh.position = this.titlePosition;
+  this.titlePosition.x += this.titleMesh.totalWidth / 2;
+  
+  this.titleMesh.link = this;
+
+  scene.add( this.titleMesh);
+
+  LINK_TITLE_MESHES.push( this.titleMesh );
+
 
   this.radius   = this.params.repelRadius
 
@@ -103,26 +133,29 @@ Link.prototype.activate = function(){
 Link.prototype.select = function(){
 
   console.log( 'SELECSS');
+  ULTIMATE_STREAM.stop( this.stream.play() );
+
 
 }
 
 Link.prototype.hoverOver = function(){
 
-  repelRadii[ 10 ] = 7000;
+  repelRadii[ camera.repelID ] = 7000;
   this.radius = 2000;
   repelRadii[ this.id ] = this.radius;
   this.hovered = true;
 
 
-  this.linkLine.geometry.vertices[1]=  this.position.clone();
-  this.linkLine.geometry.vertices[1].add(  new THREE.Vector3(500 , 500,0)  );
-  this.linkLine.geometry.vertices[1].z = 1500;
-  //this.linkLine.geometry.vertices[1].y = 1500;
+  this.linkLine.geometry.vertices[2]=  this.titlePosition.clone();
+  this.linkLine.geometry.vertices[2].x =  this.titleLeft - 50;
+
+  var l =   this.linkLine.geometry.vertices[2];
+  //this.linkLine.geometry.vertices[1].sub(  new THREE.Vector3(1200 , 0 ,0)  );
+    //this.linkLine.geometry.vertices[1].y = 1500;
   //this.linkLine.geometry.vertices[1].x = 1500;*/
 
-  this.linkLine.geometry.vertices[2] =  this.position.clone();
-  this.linkLine.geometry.vertices[2].add( new THREE.Vector3(1200 , 500,0) );
-  this.linkLine.geometry.vertices[2].z = 1500;
+  this.linkLine.geometry.vertices[1] =  l.clone();
+  this.linkLine.geometry.vertices[1].sub(  new THREE.Vector3(1000 , 0 ,0)  );
   //this.linkLine.geometry.vertices[2].y = 1500;
   //this.linkLine.geometry.vertices[2].x = 2500;*/
 
@@ -131,13 +164,10 @@ Link.prototype.hoverOver = function(){
   var v = this.linkLine.geometry.vertices[2].clone();
 
   projector.unprojectVector( v , camera );
-  console.log( v );
 
   v.sub( camera.position  );
-  console.log( v );
 
   var x = ( v.x  / window.innerWidth ) - 1;
-  console.log( x );
   
   //    mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
 //      mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
@@ -146,7 +176,7 @@ Link.prototype.hoverOver = function(){
 
 
 Link.prototype.hoverOut = function(){
-  repelRadii[ 10 ] = 100;
+  repelRadii[ camera.repelID  ] = 100;
   this.radius = this.params.repelRadius;
   repelRadii[ this.id ] = this.radius;
   this.hovered = false;

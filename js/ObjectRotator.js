@@ -8,8 +8,9 @@ function ObjectRotator( object ){
 
   this.curQuaternion;
 
-  this.rotationSpeed = 1;
+  this.rotationSpeed = .5;
 
+  this.maxSpeed = .1;
 
   this.windowHalfX = window.innerWidth / 2;
   this.windowHalfY = window.innerHeight / 2;
@@ -25,7 +26,7 @@ function ObjectRotator( object ){
 
 
   this.minDelta = .05;
-  this.drag = .98;
+  this.drag = .99;
 
   document.addEventListener('mousedown', this.onDocumentMouseDown.bind( this ), false);
 
@@ -161,6 +162,12 @@ ObjectRotator.prototype.rotateMatrix = function(rotateStart, rotateEnd){
   if( angle ){
     axis.crossVectors( rotateStart , rotateEnd ).normalize();
     angle *= this.rotationSpeed;
+
+    if( angle > this.maxSpeed ){
+
+      angle = this.maxSpeed;
+
+    }
     quaternion.setFromAxisAngle( axis , angle );
   }
 

@@ -93,6 +93,48 @@ function updateMechanics( delta ){
 
   }
 
+
+  
+  var intersects = raycaster.intersectObjects( LINK_TITLE_MESHES );
+
+  if( intersects.length > 0  ){
+
+    var firstIntersected = intersects[0].object;
+
+    if( !LINK_INTERSECTED ){
+
+      LINK_INTERSECTED = firstIntersected;
+
+      //console.log
+      LINK_INTERSECTED.link.hoverOver();
+
+    }else{
+
+      if( LINK_INTERSECTED != firstIntersected ){
+
+        LINK_INTERSECTED.link.hoverOut();
+
+        LINK_INTERSECTED = firstIntersected;
+
+        LINK_INTERSECTED.link.hoverOver();
+
+      }
+
+    }
+
+
+  }else{
+
+    if( LINK_INTERSECTED ){
+
+      LINK_INTERSECTED.link.hoverOut();
+      LINK_INTERSECTED = undefined;
+
+    }
+
+  }
+
+
 }
 
 
