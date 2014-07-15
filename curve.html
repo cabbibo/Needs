@@ -18,18 +18,49 @@
   </style>
 </head>
 <body>
-  
+
+<script src = "lib/underscore.js"         ></script>
 <script src = "lib/three.js"              ></script>
+<script src = "lib/jquery.min.js"         ></script>
+<script src = "lib/ShaderLoader.js"       ></script>
 <script src = "lib/TrackballControls.js"  ></script>
+
+<script src = "lib/Stream.js"             ></script>
+<script src = "lib/UserAudio.js"          ></script>
+<script src = "lib/AudioController.js"    ></script>
+<script src = "lib/AudioTexture.js"       ></script>
 
 <script src = "js/LinkArch.js"            ></script>
 
 <script>
 
   var sceneSize = 5000;
-  init();
-  animate();
+  //init();
+  //animate();
 
+  
+  var audioController = new AudioController();
+
+  //audioController.mute.gain.value = 0;
+
+var stream = new Stream(  'audio/slowDance.mp3',audioController  );
+
+
+   var shaders = new ShaderLoader('shaders');
+
+
+  shaders.load( 'vs-curve' , 'curve' , 'vertex' );
+  shaders.load( 'fs-curve' , 'curve' , 'fragment' );
+
+  var t_combo       = THREE.ImageUtils.loadTexture( 'img/iri/combo.png' );
+  
+  shaders.shaderSetLoaded = function(){
+
+    init();
+    animate();
+    stream.play();
+
+  }
 function init(){
 
     scene = new THREE.Scene();
@@ -64,6 +95,35 @@ function init(){
 
     // Making sure our renderer is always the right size
     window.addEventListener( 'resize', onWindowResize , false );
+
+   
+    var tNormal   = THREE.ImageUtils.loadTexture( 'img/normals/moss_normal_map.jpg' );
+
+    tNormal.wrapS = THREE.RepeatWrapping; 
+    tNormal.wrapT = THREE.RepeatWrapping; 
+  
+    var uniforms = {
+
+      lightPos: { type:"v3" , value:camera.position },
+      tNormal:{type:"t",value:tNormal},
+      time:timer,
+      t_iri:{ type:"t" , value: t_combo },
+      t_audio:{ type:"t" , value: audioController.texture },
+      texScale:{type:"f" , value:.001},
+      normalScale:{type:"f" , value:.8},
+
+    }
+
+    vertexShader   = shaders.vertexShaders.curve;
+    fragmentShader = shaders.fragmentShaders.curve;
+
+    var material = new THREE.ShaderMaterial({
+
+      uniforms: uniforms,
+      vertexShader: vertexShader,
+      fragmentShader: fragmentShader
+
+    });
 
     var linkArch = new LinkArch();
 

@@ -2,14 +2,14 @@ function LinkArch(){
 
   var slices = 1000;
 
-  var sides = 50;
+  var sides = 500;
 
   this.geometry = this.createGeo( slices , sides );
 
   this.material = new THREE.MeshNormalMaterial();
 
   this.mesh = new THREE.Mesh( this.geometry, this.material );
-  //scene.add( this.mesh );
+  scene.add( this.mesh );
 
 }
 
@@ -18,6 +18,7 @@ LinkArch.prototype.createGeo = function( slices , sides ){
   var geometry = new THREE.BufferGeometry();
 
   console.log( 'NUMOF' );
+  console.log( slices * sides * 6 * 3 );
 
   var numOf = slices * sides;
 
@@ -26,9 +27,9 @@ LinkArch.prototype.createGeo = function( slices , sides ){
   var positions = geometry.getAttribute( 'position' ).array;
 
 
-  var crudeCurve = this.createCrudeCurve( 5 );
+  var crudeCurve = this.createCrudeCurve( 10 );
 
-  var mesh = new THREE.Mesh( 
+  /*var mesh = new THREE.Mesh( 
     new THREE.IcosahedronGeometry( 20 , 1 ) ,
     new THREE.MeshNormalMaterial()
   );
@@ -41,12 +42,12 @@ LinkArch.prototype.createGeo = function( slices , sides ){
     m.position = crudeCurve[i];
     scene.add( m );
 
-  }
+  }*/
 
 
   var centerPoints = this.createCleanCurve( crudeCurve , slices ); 
 
-  var mesh = new THREE.Mesh( 
+ /* var mesh = new THREE.Mesh( 
       new THREE.CubeGeometry( 10 , 10 , 30 ) ,
       new THREE.MeshBasicMaterial()
   );
@@ -55,16 +56,16 @@ LinkArch.prototype.createGeo = function( slices , sides ){
   for( var  i = 0 ; i < centerPoints.length; i++ ){
 
     var mat = new THREE.MeshBasicMaterial();
-    mat.color = new THREE.Color(( i / centerPoints.length ) , 0 , .3 );
+    mat.color = new THREE.Color(( i / centerPoints.length ) , .5 , 1 );
     var m = new THREE.Mesh( geo , mat );
 
-
-    //m.lookAt( m.postion.clone().add( centerPoints[i].normal );
     m.position = centerPoints[i];
     m.lookAt( m.position.clone().add( centerPoints[i].normal ));
     scene.add( m );
 
-  }
+  }*/
+
+
   var TOTAL = 0;
 
   // Two parts,
@@ -103,7 +104,7 @@ LinkArch.prototype.createGeo = function( slices , sides ){
       var x = Math.cos( theta );
       var y = Math.sin( theta );
 
-      var r = 300;
+      var r = Math.random() * 100 + 300;
 
       var point = center.clone();
 
@@ -235,13 +236,13 @@ LinkArch.prototype.createCleanCurve = function( crudePoints , cleanCurveLength )
 
     //console.log( amount );
 
-    var p0 = new THREE.Vector3();
-    var p1 = new THREE.Vector3();
-    var v0 = new THREE.Vector3();
-    var v1 = new THREE.Vector3();
+    var p0 = new THREE.Vector3(0,0,0);
+    var p1 = new THREE.Vector3(0,0,0);
+    var v0 = new THREE.Vector3(0,0,0);
+    var v1 = new THREE.Vector3(0,0,0);
 
-    var p2 = new THREE.Vector3();
-    var p3 = new THREE.Vector3();
+    var p2 = new THREE.Vector3(0,0,0);
+    var p3 = new THREE.Vector3(0,0,0);
 
     if( baseDown == 0 ){
 
@@ -249,11 +250,13 @@ LinkArch.prototype.createCleanCurve = function( crudePoints , cleanCurveLength )
       p1 = crudePoints[ baseUp     ].clone();
       p2 = crudePoints[ baseUp + 1 ].clone(); 
 
-      v1 =  p2.clone().sub( p0 );
+      v1 =  p2.clone();
+      v1.sub( p0.clone() );
       v1.multiplyScalar( .5 );
 
     }else if( baseUp == crudePoints.length -1 ){
       
+     
       p0 = crudePoints[ baseDown].clone();
       p1 = crudePoints[ baseUp ].clone();
       p2 = crudePoints[ baseDown - 1 ].clone();
@@ -277,16 +280,20 @@ LinkArch.prototype.createCleanCurve = function( crudePoints , cleanCurveLength )
       v0.sub( p3 );
       v0.multiplyScalar( .5 );
 
+
     }
 
 
     v0.multiplyScalar( 1/3 );
     v1.multiplyScalar( 1/3 );
 
+    v0.multiplyScalar( 1 );
+    v1.multiplyScalar( 1 );
+
     var c0 = p0.clone();
-    var c1 = p0.add( v0 );
-    var c2 = p1.sub( v1 );
-    var c3 = p1.clone().multiplyScalar( 2 );
+    var c1 = p0.clone().add( v0 );
+    var c2 = p1.clone().sub( v1 );
+    var c3 = p1.clone();
 
     var point   = this.cubicCurve( amount , c0 , c1 , c2 , c3 );
     var forNorm = this.cubicCurve( amount + .01 , c0 , c1 , c2 , c3 );
