@@ -494,7 +494,7 @@
 
   loader.beginLoading();
   shaders.shaderSetLoaded = function(){
-    init();
+  //  init();
     loader.endLoading();
   }
 
@@ -767,6 +767,7 @@
 
   loader.onStart = function(){
 
+    init();
     animate();
 
   }
