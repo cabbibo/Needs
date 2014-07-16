@@ -103,6 +103,7 @@
   T_IRI.blue = THREE.ImageUtils.loadTexture( 'img/iri/blue.png' );
   T_IRI.rainbow = THREE.ImageUtils.loadTexture( 'img/iri/rainbow.png' );
   T_IRI.rainbowLight  = THREE.ImageUtils.loadTexture( 'img/iri/rainbowLight.png' );
+  T_IRI.turq2  = THREE.ImageUtils.loadTexture( 'img/iri/turq2.png' );
 
   var T_IRI_STRINGS = [];
 
@@ -179,23 +180,27 @@
         uFloatForce: 3000,
         uRadiusMultiplier: 1.4,
         uSpringForce: 100,
-        uSpringDist: 30,
+        uSpringDist: 100,
         uRepelMultiplier: 200,
       
       },
+      
       renderParams:{
         t_iri: T_IRI.gold,
-        t_iri2: T_IRI.red,
-        girth: 10,
-        headMultiplier: .5
+        t_iri2: T_IRI.turq2,
+        girth: 2.4,
+        headMultiplier: 6.3,
+        texScale:0.01,
+        normalScale:.3
 
       },
+      
       
 
 
       centerParams:{
 
-        tNormal: T_NORM.sand,
+        tNormal: T_NORM.carbon,
         t_iri: T_IRI.gold,
 
       },
@@ -288,23 +293,30 @@
         uRadiusMultiplier: 1.4,
         uSpringForce: 70,
         uSpringDist: .1,
-        uRepelMultiplier: 200, 
+        uRepelMultiplier: 200,
       
       },
       renderParams:{
         t_iri: T_IRI.gold,
-        t_iri2: T_IRI.red,
-        girth: 10,
-        headMultiplier: .5
+        t_iri2: T_IRI.purpleBright,
+        girth: 3,
+        headMultiplier: 20.5,
+        texScale:.004,
+        normalScale:.1,
+        tNormal:T_NORM.carbon
 
       },
       
       centerParams:{
 
         tNormal: T_NORM.moss,
-        t_iri: T_IRI.pinkRed,
+        t_iri: T_IRI.purpleBright,
 
       },
+
+      t_iri: T_IRI.purpleBright,
+      t_normal: T_NORM.moss
+
 
 
     },

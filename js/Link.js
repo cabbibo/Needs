@@ -84,6 +84,7 @@ function Link( id , total , params ){
 
   LINK_TITLE_MESHES.push( this.titleMesh );
 
+  this.blackMat = new THREE.MeshBasicMaterial({color:0x000000});
 
   this.radius   = this.params.repelRadius
 
@@ -147,6 +148,7 @@ Link.prototype.select = function(){
 
   tendrils.setPhysicsParams( this.params.physicsParams );
   tendrils.setRenderParams( this.params.renderParams );
+  tendrils.setCenterParams( this.params.centerParams );
 
   CURRENT_SONG = this;
 }
@@ -161,7 +163,10 @@ Link.prototype.hoverOver = function(){
   this.hovered = true;
 
 
-  tendrils.setCenterParams( this.params.centerParams );
+  this.mesh.material = this.material;
+  this.mesh.materialNeedsUpdate = true;
+
+  //tendrils.setCenterParams( this.params.centerParams );
 
   this.linkLine.geometry.vertices[2]=  this.titlePosition.clone();
   this.linkLine.geometry.vertices[2].x =  this.titleLeft - 50;
@@ -196,15 +201,18 @@ Link.prototype.hoverOut = function(){
 
   this.titleMesh.material.opacity = .4;
 
+  this.mesh.material = this.blackMat;
+  this.mesh.materialNeedsUpdate = true;
+
 //  repelRadii[ camera.repelID  ] = 100;
   this.radius /=2;// this.params.repelRadius;
   repelRadii[ this.id ] = this.radius;
   this.hovered = false;
 
 
-  if( CURRENT_SONG ){
+  /*if( CURRENT_SONG ){
     tendrils.setCenterParams( CURRENT_SONG.params.centerParams );
-  }
+  }*/
 
   this.linkLine.geometry.vertices[1] = this.position;
   this.linkLine.geometry.vertices[2] = this.position;
