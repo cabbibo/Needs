@@ -99,6 +99,10 @@
   T_IRI.yellowPurp  = THREE.ImageUtils.loadTexture( 'img/iri/neonYellowPurp.png' );
   T_IRI.wet         = THREE.ImageUtils.loadTexture( 'img/iri/greenBluePurp.png' );
   T_IRI.orangeTurq  = THREE.ImageUtils.loadTexture( 'img/iri/orangeTurq.png' );
+  T_IRI.purpleBright = THREE.ImageUtils.loadTexture( 'img/iri/purpleBright.png' );
+  T_IRI.blue = THREE.ImageUtils.loadTexture( 'img/iri/blue.png' );
+  T_IRI.rainbow = THREE.ImageUtils.loadTexture( 'img/iri/rainbow.png' );
+  T_IRI.rainbowLight  = THREE.ImageUtils.loadTexture( 'img/iri/rainbowLight.png' );
 
   var T_IRI_STRINGS = [];
 
@@ -143,10 +147,13 @@
       },
 
       renderParams:{
-        t_iri: T_IRI.gold,
-        t_iri2: T_IRI.red,
-        girth: 10,
-        headMultiplier: .5
+        t_iri: T_IRI.rainbowLight,
+        t_iri2: T_IRI.gold,
+        girth: 2,
+        headMultiplier: 30.5,
+        texScale: .001,
+        normalScale: .02,
+        tNormal: T_NORM.moss
 
       },
       
@@ -154,11 +161,11 @@
       centerParams:{
 
         tNormal: T_NORM.moss,
-        t_iri: T_IRI.wet,
+        t_iri: T_IRI.gold,
 
       },
 
-      t_iri: T_IRI.wet,
+      t_iri: T_IRI.gold,
       t_normal: T_NORM.moss
 
 
@@ -204,18 +211,20 @@
 
         uFloatForce: 1000,
         uRadiusMultiplier: 1.4,
-        uSpringForce: 50,
-        uSpringDist: 3,
+        uSpringForce: 100,
+        uSpringDist: 93,
         uRepelMultiplier: 10, 
       
       },
 
       
       renderParams:{
-        t_iri: T_IRI.gold,
-        t_iri2: T_IRI.red,
-        girth: 10,
-        headMultiplier: .5
+        t_iri: T_IRI.turq ,
+        t_iri2: T_IRI.pinkRed,
+        girth: 3,
+        headMultiplier: 13.5,
+        texScale:0.001,
+        normalScale:.1
 
       },
       
@@ -247,17 +256,25 @@
       renderParams:{
         t_iri: T_IRI.gold,
         t_iri2: T_IRI.red,
-        girth: 10,
-        headMultiplier: .5
+        girth: 4.4,
+        headMultiplier: 4.6,
+        texScale:.011,
+        normalScale:.26,
+        tNormal:T_NORM.moss
 
       },
       
       centerParams:{
 
         tNormal: T_NORM.moss,
-        t_iri: T_IRI.pinkRed,
+        t_iri: T_IRI.blue,
 
       },
+
+      t_iri: T_IRI.blue,
+      t_normal: T_NORM.moss
+
+
 
 
     },

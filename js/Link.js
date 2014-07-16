@@ -153,6 +153,8 @@ Link.prototype.select = function(){
 
 Link.prototype.hoverOver = function(){
 
+  this.titleMesh.material.opacity = 1;
+
   //repelRadii[ camera.repelID ] = 7000;
   this.radius *= 2; //2000;
   repelRadii[ this.id ] = this.radius;
@@ -170,7 +172,7 @@ Link.prototype.hoverOver = function(){
   //this.linkLine.geometry.vertices[1].x = 1500;*/
 
   this.linkLine.geometry.vertices[1] =  l.clone();
-  this.linkLine.geometry.vertices[1].sub(  new THREE.Vector3(1000 , 0 ,0)  );
+  this.linkLine.geometry.vertices[1].sub(  new THREE.Vector3(200 , 0 ,0)  );
   //this.linkLine.geometry.vertices[2].y = 1500;
   //this.linkLine.geometry.vertices[2].x = 2500;*/
 
@@ -191,6 +193,9 @@ Link.prototype.hoverOver = function(){
 
 
 Link.prototype.hoverOut = function(){
+
+  this.titleMesh.material.opacity = .4;
+
 //  repelRadii[ camera.repelID  ] = 100;
   this.radius /=2;// this.params.repelRadius;
   repelRadii[ this.id ] = this.radius;
