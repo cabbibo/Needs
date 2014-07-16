@@ -355,6 +355,7 @@
 
   var audioController = new AudioController();
 
+  var NOTFIRSTFRAME;
  // audioController.mute.gain.value = 0;
 
  // var stream = new Stream(  'audio/you.mp3',audioController  );
@@ -560,6 +561,11 @@
 
     });*/
 
+    for( var i = 0; i < LINKS.length; i++ ){
+
+      //LINKS[i].hoverOut();
+
+    }
   }
 
 
@@ -597,6 +603,18 @@
 
     requestAnimationFrame( animate );
 
+
+    // Hack to make materials disappear proper
+    if( !NOTFIRSTFRAME ){
+      console.log('asdas');
+      for( var i = 0; i < LINKS.length; i++ ){
+
+        LINKS[i].hoverOut();
+
+      }
+
+      NOTFIRSTFRAME = true;
+    }
   }
 
   function intersectLinks(){

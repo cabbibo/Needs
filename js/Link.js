@@ -75,6 +75,7 @@ function Link( id , total , params ){
     
   });
 
+  this.titleMesh.material.opacity = .3;
   this.titleMesh.position = this.titlePosition;
   this.titlePosition.x += this.titleMesh.totalWidth / 2;
   
@@ -91,7 +92,6 @@ function Link( id , total , params ){
   this.material = this.createMaterial();
 
   this.mesh = new THREE.Mesh( this.params.geometry , this.material ); 
-
   this.mesh.position = this.position;
   this.mesh.velocity = this.velocity;
 
@@ -136,9 +136,13 @@ Link.prototype.activate = function(){
   scene.add( this.linkLine );
   this.active = true;
 
+ // this.mesh.material = this.blackMat;
+ // this.mesh.materialNeedsUpdate = true;
+
+
+
 
 }
-
 
 Link.prototype.select = function(){
 
@@ -151,6 +155,8 @@ Link.prototype.select = function(){
   tendrils.setCenterParams( this.params.centerParams );
 
   CURRENT_SONG = this;
+
+
 }
 
 Link.prototype.hoverOver = function(){
