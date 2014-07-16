@@ -91,8 +91,6 @@ function Link( id , total , params ){
   
   this.titleMesh.link = this;
 
-  scene.add( this.titleMesh);
-
   LINK_TITLE_MESHES.push( this.titleMesh );
 
   this.blackMat = new THREE.MeshBasicMaterial({color:0x000000});
@@ -142,6 +140,7 @@ Link.prototype.createLinkLine = function(){
 
 Link.prototype.activate = function(){
 
+  scene.add( this.titleMesh);  
   scene.add( this.mesh );
   //scene.add( this.linkLine );
   this.active = true;
@@ -160,10 +159,14 @@ Link.prototype.select = function(){
      
     for( var i = 0; i < LINKS.length; i++ ){
 
-      LINKS[i].titleMesh.material.opacity = .6;
+      if( LINKS[i] !== this ){
+        LINKS[i].titleMesh.material.opacity = .6;
+        LINKS[i].mesh.material = LINKS[i].blackMat;
+        LINKS[i].mesh.materialNeedsUpdate = true;
+      }
 
     }
-    this.titleMesh.material.opacity = 1;
+    //this.titleMesh.material.opacity = 1;
 
     var s = this.stream;
     console.log( s );
@@ -242,12 +245,16 @@ Link.prototype.hoverOut = function(){
 
   if( CURRENT_SONG !== this ){
     this.titleMesh.material.opacity = .6;
+      this.mesh.material = this.blackMat;
+  this.mesh.materialNeedsUpdate = true;
+
   }
   //this.titleMesh.position.z -= 500;
   //this.titleMesh.position.x += 100;
 
-  this.mesh.material = this.blackMat;
-  this.mesh.materialNeedsUpdate = true;
+
+  //this.mesh.material = this.blackMat;
+  //this.mesh.materialNeedsUpdate = true;
 
 //  repelRadii[ camera.repelID  ] = 100;
   this.radius /=2;// this.params.repelRadius;

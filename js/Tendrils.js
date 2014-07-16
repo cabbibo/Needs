@@ -106,7 +106,9 @@
 
     this.centerGeo = new THREE.IcosahedronGeometry( 300 , 3 );
     this.centerMat = material;
-    this.center = new THREE.Mesh( this.centerGeo , this.centerMat );
+
+    var bm = new THREE.MeshBasicMaterial({color:0x000000});
+    this.center = new THREE.Mesh( this.centerGeo , bm);
     scene.add( this.center );
 
     this.bases = this.createBases();
