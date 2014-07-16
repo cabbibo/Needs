@@ -54,6 +54,21 @@
       z-index:999;
 
     }
+
+
+    #curtain{
+
+      position:absolute;
+      display:block;
+      width:100%;
+      height:100%;
+      top:0px;
+      left:0px;
+      background:#000;
+      z-index : 999;
+
+    }
+
   </style>
 </head>
 <body>
@@ -77,6 +92,9 @@
 <script src = "lib/PhysicsRenderer.js"    ></script>
 <script src = "lib/TextCreator.js"        ></script>
 
+<script src = "lib/Loader.js"             ></script>
+<script src = "lib/LoadedAudio.js"        ></script>
+
 <script src = "js/ObjectRotator.js"       ></script>
 <script src = "js/Tendrils.js"            ></script>
 <script src = "js/Link.js"                ></script>
@@ -86,9 +104,10 @@
 
 <script>
 
+  var loader = new Loader();
 
-  
   var T_IRI = {}
+
 
   T_IRI.red         = THREE.ImageUtils.loadTexture( 'img/iri/red.png' );
   T_IRI.turq        = THREE.ImageUtils.loadTexture( 'img/iri/turq.png' );
@@ -392,10 +411,12 @@
   shaders.load( 'vs-tendrilLine' , 'tendrilLine' , 'vertex' );
 
   shaders.load( 'tendrilSim' , 'tendrilSim' , 'simulation' );
- 
+
+  loader.beginLoading();
   shaders.shaderSetLoaded = function(){
-   onLoad();
- }
+    init();
+    loader.endLoading();
+  }
 
 
 
@@ -635,20 +656,13 @@
 
   }
 
-  function onLoad(){
+  loader.onStart = function(){
 
-
-    loaded ++;
-
-    if( loaded === neededToLoad ){
-
-      init();
-      animate();
-      //stream.play();
-
-    }
+    animate();
 
   }
+
+
 </script>
 
 

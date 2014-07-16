@@ -27,6 +27,7 @@ function Link( id , total , params ){
     note:'BLAH',
 
     file:'audio/needs.mp3',
+    note:'audio/notes/needs.mp3',
    
     springDistance: 2000,
     dampening: .999999,
@@ -44,10 +45,19 @@ function Link( id , total , params ){
     t_iri: T_IRI.red,
     t_normal: T_NORM.sand
 
-
   });
 
   this.stream = new Stream( this.params.file , audioController ); 
+
+
+  loader.beginLoading();
+
+  this.note = new LoadedAudio( audioController , this.params.note , {
+    texture:false 
+  });
+
+//  this.note.gain.gain.value = .1;
+  this.note.onLoad = loader.endLoading.bind( loader );
 
   this.position = new THREE.Vector3(
     (Math.random() -.5 ) * 1000,
@@ -75,7 +85,7 @@ function Link( id , total , params ){
     
   });
 
-  this.titleMesh.material.opacity = .3;
+  this.titleMesh.material.opacity = .6;
   this.titleMesh.position = this.titlePosition;
   this.titlePosition.x += this.titleMesh.totalWidth / 2;
   
@@ -133,7 +143,7 @@ Link.prototype.createLinkLine = function(){
 Link.prototype.activate = function(){
 
   scene.add( this.mesh );
-  scene.add( this.linkLine );
+  //scene.add( this.linkLine );
   this.active = true;
 
  // this.mesh.material = this.blackMat;
@@ -146,22 +156,47 @@ Link.prototype.activate = function(){
 
 Link.prototype.select = function(){
 
-  var s = this.stream;
-  console.log( s );
-  this.stream.stop( s.play.bind( this.stream ) );
+  if( CURRENT_SONG !== this ){
+     
+    for( var i = 0; i < LINKS.length; i++ ){
 
-  tendrils.setPhysicsParams( this.params.physicsParams );
-  tendrils.setRenderParams( this.params.renderParams );
-  tendrils.setCenterParams( this.params.centerParams );
+      LINKS[i].titleMesh.material.opacity = .6;
 
-  CURRENT_SONG = this;
+    }
+    this.titleMesh.material.opacity = 1;
+
+    var s = this.stream;
+    console.log( s );
+    this.stream.stop( s.play.bind( this.stream ) );
+
+    tendrils.setPhysicsParams( this.params.physicsParams );
+    tendrils.setRenderParams( this.params.renderParams );
+    tendrils.setCenterParams( this.params.centerParams );
+
+    CURRENT_SONG = this;
+
+  }else{
+
+    this.titleMesh.material.opacity = .6;
+    this.stream.stop();
+    CURRENT_SONG = undefined;
+
+  }
 
 
 }
 
+
 Link.prototype.hoverOver = function(){
 
   this.titleMesh.material.opacity = 1;
+
+ // this.titleMesh.position.z += 500;
+ // this.titleMesh.position.x -= 100;
+
+  this.note.play();
+  this.note.gain.gain.value = .1;
+  
 
   //repelRadii[ camera.repelID ] = 7000;
   this.radius *= 2; //2000;
@@ -205,7 +240,11 @@ Link.prototype.hoverOver = function(){
 
 Link.prototype.hoverOut = function(){
 
-  this.titleMesh.material.opacity = .4;
+  if( CURRENT_SONG !== this ){
+    this.titleMesh.material.opacity = .6;
+  }
+  //this.titleMesh.position.z -= 500;
+  //this.titleMesh.position.x += 100;
 
   this.mesh.material = this.blackMat;
   this.mesh.materialNeedsUpdate = true;

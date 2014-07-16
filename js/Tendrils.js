@@ -80,7 +80,7 @@
       lightPos: { type:"v3" , value: new THREE.Vector3(100,0,0)},
       tNormal:{type:"t",value:T_NORM.sand},
       time:timer,
-      t_iri:{ type:"t" , value:T_IRI.combo},
+      t_iri:{ type:"t" , value:T_IRI.turq2},
       t_audio:{ type:"t" , value: audioController.texture },
       texScale:{type:"f" , value:.001},
       normalScale:{type:"f" , value:.8},
