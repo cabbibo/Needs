@@ -65,10 +65,10 @@ body{
   display: inline-block;
 }
 
-@font-face {
+/*@font-face {
   font-family: "GeoSans";
-  src: url("GeosansLight.ttf");
-}
+  src: url("lib/GeosansLight.ttf");
+}*/
 a{
 
   color: #fff;
