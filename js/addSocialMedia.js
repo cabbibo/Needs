@@ -18,7 +18,7 @@
       window.titleEP.href = 'https://soundcloud.com/pinknoiseordinance';
       window.titleEP.target = '_blank';
       window.titleEP.id = 'titleEP';
-      window.titleEP.innerHTML = 'JJ VERNE - NEEDS';
+      window.titleEP.innerHTML = 'JJ VERNE';
 
 
       this.social.appendChild( window.titleEP  );
@@ -57,7 +57,7 @@
           console.log('asfasfdddssddssd');
           titleEP.innerHTML = e.toElement.INFO_TEXT;
         }else{
-          titleEP.innerHTML = 'JJ VERNE - NEEDS';
+          titleEP.innerHTML = 'JJ VERNE';
         }
       });
 }
