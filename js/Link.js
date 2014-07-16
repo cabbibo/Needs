@@ -6,7 +6,9 @@ var LINK_TITLE_MESHES = [];
 var LINK_INTERSECTED;
 var LINK_TITLE_INTERSECTED;
 
+var CURRENT_SONG;
 
+var LINK_GEO = new THREE.IcosahedronGeometry( 300 , 2 );
 var LINK_GEO = new THREE.IcosahedronGeometry( 300 , 2 );
 
 var LINK_MAT;
@@ -37,15 +39,16 @@ function Link( id , total , params ){
     repelRadius: 500,
 
     geometry: LINK_GEO,
-    maxVel: 40
+    maxVel: 40,
+
+    t_iri: T_IRI.red,
+    t_normal: T_NORM.sand
 
 
   });
 
   this.stream = new Stream( this.params.file , audioController ); 
 
-  console.log('asdffff');
-  console.log( this.params.physicsParams );
   this.position = new THREE.Vector3(
     (Math.random() -.5 ) * 1000,
     (Math.random() -.5 ) * 1000,
@@ -61,14 +64,14 @@ function Link( id , total , params ){
 
   this.titlePosition = new THREE.Vector3();
   this.titlePosition.x = 2000;
-  this.titlePosition.y = (this.idNormal - .5 ) * 3000; 
+  this.titlePosition.y = (this.idNormal - .5 ) * 1000; 
 
   this.titleLeft = this.titlePosition.x;
 
 
   this.titleMesh = textCreator.createMesh( this.params.title ,{
    
-    size: 300
+    size: 100
     
   });
 
@@ -142,19 +145,21 @@ Link.prototype.select = function(){
   console.log( s );
   this.stream.stop( s.play.bind( this.stream ) );
 
-  console.log( this.params );
-  console.log( this.params.physicsParams );
   tendrils.setPhysicsParams( this.params.physicsParams );
+  tendrils.setRenderParams( this.params.renderParams );
 
+  CURRENT_SONG = this;
 }
 
 Link.prototype.hoverOver = function(){
 
   //repelRadii[ camera.repelID ] = 7000;
-  //this.radius = 2000;
-  //repelRadii[ this.id ] = this.radius;
+  this.radius *= 2; //2000;
+  repelRadii[ this.id ] = this.radius;
   this.hovered = true;
 
+
+  tendrils.setCenterParams( this.params.centerParams );
 
   this.linkLine.geometry.vertices[2]=  this.titlePosition.clone();
   this.linkLine.geometry.vertices[2].x =  this.titleLeft - 50;
@@ -187,10 +192,14 @@ Link.prototype.hoverOver = function(){
 
 Link.prototype.hoverOut = function(){
 //  repelRadii[ camera.repelID  ] = 100;
-//  this.radius = this.params.repelRadius;
-//  repelRadii[ this.id ] = this.radius;
+  this.radius /=2;// this.params.repelRadius;
+  repelRadii[ this.id ] = this.radius;
   this.hovered = false;
 
+
+  if( CURRENT_SONG ){
+    tendrils.setCenterParams( CURRENT_SONG.params.centerParams );
+  }
 
   this.linkLine.geometry.vertices[1] = this.position;
   this.linkLine.geometry.vertices[2] = this.position;
@@ -241,7 +250,7 @@ Link.prototype.updatePhysics = function(){
 
 Link.prototype.updatePosition = function(){
 
-  if( this.hovered ) return;
+  //if( this.hovered ) return;
 
   if( this.position.length() < this.params.centerSize ){
 
@@ -282,45 +291,14 @@ Link.prototype.updatePosition = function(){
 
 Link.prototype.createMaterial = function(){
 
-  var tNormal = n_moss;
-  tNormal.wrapS = THREE.RepeatWrapping; 
-  tNormal.wrapT = THREE.RepeatWrapping; 
-  console.log( 'TNOMAL');
-  console.log( tNormal );
 
-  var tLookup = THREE.ImageUtils.loadTexture( 'img/iriLookup.png' );
-
-  var c1 = Math.random();
-  var c2 = Math.random();
-  var c3 = Math.random();
-  var color1 = new THREE.Vector3( c1 , c2 , c3 );
-  
-  var c1 = Math.random();
-  var c2 = Math.random();
-  var c3 = Math.random();
-  var color2 = new THREE.Vector3( c1 , c2 , c3 );
-
-  var c1 = Math.random();
-  var c2 = Math.random();
-  var c3 = Math.random();
-  var color3 = new THREE.Vector3( c1 , c2 , c3 );
-  
-  var c1 = Math.random();
-  var c2 = Math.random();
-  var c3 = Math.random();
-  var color4 = new THREE.Vector3( c1 , c2 , c3 );
- 
   var uniforms = {
 
     lightPos: { type:"v3" , value: new THREE.Vector3(100,0,0)},
-    tNormal:{type:"t",value:tNormal},
+    tNormal:{type:"t",value:this.params.t_normal},
     time:timer,
-    tLookup:{ type:"t" , value: tLookup },
+    t_iri:{ type:"t" , value: this.params.t_iri },
     t_audio:{ type:"t" , value: audioController.texture },
-    color1:{ type:"v3" , value: color1 },
-    color2:{ type:"v3" , value: color2 },
-    color3:{ type:"v3" , value: color3 },
-    color4:{ type:"v3" , value: color4 },
     texScale:{type:"f" , value:.001},
     normalScale:{type:"f" , value:.8},
     vVel:{ type:"v3" , value: this.velocity }

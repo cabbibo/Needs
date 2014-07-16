@@ -117,31 +117,8 @@ void main(){
   float newDot = dot( normalize( nNormal ), nView );
   float inverse_dot_view = 1.0 - max( newDot  , 0.0);
 
-  vec3 p1 = color1;
-  vec3 p2 = color2;
-  vec3 p3 = color3;
-  vec3 p4 = color4;
-  
-  vec3 v1 = vec3(0.);
-  vec3 v2 = .2  * p1-p3;
-  vec3 v3 = .5  * p2-p4;
-  vec3 v4 = vec3(0.);
-
-  vec3 c1 = p1;
-  vec3 c2 = p2 + v1/3.;
-  vec3 c3 = p3 - v2/3.;
-  vec3 c4 = p4;
-
-  float s  = snoise( vPos * .0001 );
-  //float s1 = snoise( vPos * .004 );
-  
-
-  float total = s;
-
-  total = (cos(total) + 1.)/2.;
-
- // vec3 lookup = texture2D( t_iri , vec2( inverse_dot_view * facingRatio , 0. ) ).xyz;
-  vec3 lookup = cubicCurve( inverse_dot_view * facingRatio, c1 , c2 , c3 , c4 );
+  vec3 lookup = texture2D( t_iri , vec2( inverse_dot_view * facingRatio , 0. ) ).xyz;
+  //vec3 lookup = cubicCurve( inverse_dot_view * facingRatio, c1 , c2 , c3 , c4 );
 
 
  // vec3 lookup = texture2D( tLookup , vec2( inverse_dot_view * facingRatio,0. )).xyz;
@@ -158,7 +135,7 @@ void main(){
 
   //vec3 norm = ((finalNormal * .3 + .7) * facingRatio)*.1;
   vec3 norm = vec3(abs(finalNormal.x));
-  gl_FragColor = vec4(.6 * lookup + .6 * aColor + .6 * nonFacing, 1.0 );
+  gl_FragColor = vec4(.8 * lookup * aColor + .4 * nonFacing, 1.0 );
   //gl_FragColor = vec4(facing, 1.0 )
   //gl_FragColor = vec4( vUv.x , vUv.y , .5 , 1.0 );
   //gl_FragColor = vec4( finalNormal , 1.0 );

@@ -88,6 +88,46 @@
 <script>
 
 
+  
+  var T_IRI = {}
+
+  T_IRI.red         = THREE.ImageUtils.loadTexture( 'img/iri/red.png' );
+  T_IRI.turq        = THREE.ImageUtils.loadTexture( 'img/iri/turq.png' );
+  T_IRI.pinkRed     = THREE.ImageUtils.loadTexture( 'img/iri/pinkRed.png' );
+  T_IRI.gold        = THREE.ImageUtils.loadTexture( 'img/iri/gold.png' );
+  T_IRI.combo       = THREE.ImageUtils.loadTexture( 'img/iri/combo.png' );
+  T_IRI.yellowPurp  = THREE.ImageUtils.loadTexture( 'img/iri/neonYellowPurp.png' );
+  T_IRI.wet         = THREE.ImageUtils.loadTexture( 'img/iri/greenBluePurp.png' );
+  T_IRI.orangeTurq  = THREE.ImageUtils.loadTexture( 'img/iri/orangeTurq.png' );
+
+  var T_IRI_STRINGS = [];
+
+  for( var propt in T_IRI ){
+
+    console.log( propt );
+    T_IRI_STRINGS.push( propt );
+
+  }
+
+  var T_NORM = {};
+  
+  T_NORM.carbon = THREE.ImageUtils.loadTexture( 'img/normals/carbonFiber.png' );
+  T_NORM.snow   = THREE.ImageUtils.loadTexture( 'img/normals/ice-snow.jpg' );
+  T_NORM.sand   = THREE.ImageUtils.loadTexture( 'img/normals/sand.png' );
+  T_NORM.ice    = THREE.ImageUtils.loadTexture( 'img/normals/7723-normal.jpg' );
+  T_NORM.moss   = THREE.ImageUtils.loadTexture( 'img/normals/moss_normal_map.jpg' );
+
+  var T_NORM_STRINGS = [];
+
+  for( var propt in T_NORM ){
+
+    T_NORM[ propt ].wrapS = THREE.RepeatWrapping; 
+    T_NORM[ propt ].wrapT = THREE.RepeatWrapping; 
+    T_NORM_STRINGS.push( propt );
+
+  }
+
+
   var SONG_PARAMS = [
 
     { 
@@ -95,10 +135,32 @@
       file:'audio/atNight.mp3',
 
       physicsParams:{
-
-        uFloatForce: 100,
-        uRadiusMultiplier:1 
+        uFloatForce: 3000,
+        uRadiusMultiplier: 1.8,
+        uSpringForce: 10,
+        uSpringDist: 1,
+        uRepelMultiplier: 10,
       },
+
+      renderParams:{
+        t_iri: T_IRI.gold,
+        t_iri2: T_IRI.red,
+        girth: 10,
+        headMultiplier: .5
+
+      },
+      
+
+      centerParams:{
+
+        tNormal: T_NORM.moss,
+        t_iri: T_IRI.wet,
+
+      },
+
+      t_iri: T_IRI.wet,
+      t_normal: T_NORM.moss
+
 
     },
     
@@ -107,9 +169,32 @@
       file:'audio/slowDance.mp3',
        physicsParams:{
 
-        uFloatForce: 10000,
-        uRadiusMultiplier: 1      },
+        uFloatForce: 3000,
+        uRadiusMultiplier: 1.4,
+        uSpringForce: 100,
+        uSpringDist: 30,
+        uRepelMultiplier: 200,
+      
+      },
+      renderParams:{
+        t_iri: T_IRI.gold,
+        t_iri2: T_IRI.red,
+        girth: 10,
+        headMultiplier: .5
 
+      },
+      
+
+
+      centerParams:{
+
+        tNormal: T_NORM.sand,
+        t_iri: T_IRI.gold,
+
+      },
+
+      t_iri: T_IRI.gold,
+      t_normal: T_NORM.sand
     },
     
     { 
@@ -117,29 +202,93 @@
       file:'audio/only.mp3',
        physicsParams:{
 
-        uFloatForce: 10000,
-        uRadiusMultiplier: 1      },
+        uFloatForce: 1000,
+        uRadiusMultiplier: 1.4,
+        uSpringForce: 50,
+        uSpringDist: 3,
+        uRepelMultiplier: 10, 
+      
+      },
+
+      
+      renderParams:{
+        t_iri: T_IRI.gold,
+        t_iri2: T_IRI.red,
+        girth: 10,
+        headMultiplier: .5
+
+      },
+      
+      centerParams:{
+
+        tNormal: T_NORM.moss,
+        t_iri: T_IRI.pinkRed,
+
+      },
+
+      t_iri: T_IRI.pinkRed,
+      t_normal: T_NORM.moss
+
 
     },
     
     { 
       title: 'Give You',
       file:'audio/giveYou.mp3',
-       physicsParams:{
+      physicsParams:{
 
-        uFloatForce: 10000,
-        uRadiusMultiplier: 1      },
+        uFloatForce: 1000,
+        uRadiusMultiplier: 1.4,
+        uSpringForce: 50,
+        uSpringDist: 100,
+        uRepelMultiplier: 10, 
+      
+      },
+      renderParams:{
+        t_iri: T_IRI.gold,
+        t_iri2: T_IRI.red,
+        girth: 10,
+        headMultiplier: .5
+
+      },
+      
+      centerParams:{
+
+        tNormal: T_NORM.moss,
+        t_iri: T_IRI.pinkRed,
+
+      },
+
 
     },
     
     { 
       title: 'Needs',
       file:'audio/needs.mp3',
-       physicsParams:{
+      physicsParams:{
 
         uFloatForce: 10000,
-        uRadiusMultiplier: 1
+        uRadiusMultiplier: 1.4,
+        uSpringForce: 70,
+        uSpringDist: .1,
+        uRepelMultiplier: 200, 
+      
       },
+      renderParams:{
+        t_iri: T_IRI.gold,
+        t_iri2: T_IRI.red,
+        girth: 10,
+        headMultiplier: .5
+
+      },
+      
+      centerParams:{
+
+        tNormal: T_NORM.moss,
+        t_iri: T_IRI.pinkRed,
+
+      },
+
 
     },
 
@@ -177,7 +326,7 @@
 
   var audioController = new AudioController();
 
-  //audioController.mute.gain.value = 0;
+ // audioController.mute.gain.value = 0;
 
  // var stream = new Stream(  'audio/you.mp3',audioController  );
 
@@ -215,25 +364,11 @@
  
   shaders.shaderSetLoaded = function(){
    onLoad();
-  }
+ }
 
-  var t_red         = THREE.ImageUtils.loadTexture( 'img/iri/red.png' );
-  var t_turq        = THREE.ImageUtils.loadTexture( 'img/iri/turq.png' );
-  var t_pinkRed     = THREE.ImageUtils.loadTexture( 'img/iri/pinkRed.png' );
-  var t_gold        = THREE.ImageUtils.loadTexture( 'img/iri/gold.png' );
-  var t_combo       = THREE.ImageUtils.loadTexture( 'img/iri/combo.png' );
-  var t_yellowPurp  = THREE.ImageUtils.loadTexture( 'img/iri/neonYellowPurp.png' );
-  var t_wet         = THREE.ImageUtils.loadTexture( 'img/iri/greenBluePurp.png' );
-  var t_orangeTurq  = THREE.ImageUtils.loadTexture( 'img/iri/orangeTurq.png' );
 
-  var n_carbon = THREE.ImageUtils.loadTexture( 'img/normals/carbonFiber.png' );
-  var n_snow   = THREE.ImageUtils.loadTexture( 'img/normals/ice-snow.jpg' );
-  var n_sand   = THREE.ImageUtils.loadTexture( 'img/normals/sand.png' );
-  //var n_rock   = THREE.ImageUtils.loadTexture( 'img/normals/rock.png' );
-  var n_ice    = THREE.ImageUtils.loadTexture( 'img/normals/7723-normal.jpg' );
-  var n_moss   = THREE.ImageUtils.loadTexture( 'img/normals/moss_normal_map.jpg' );
 
-  var PARAMS = {
+ /* var PARAMS = {
 
 
     // Sim
@@ -280,9 +415,7 @@
     ballsDampening: .9999
 
 
-
-
-  }
+  }*/
 
 
   // on repel radius change, loop through repel radii
@@ -370,7 +503,7 @@
 
 
     
-    var tNormal   = THREE.ImageUtils.loadTexture( 'img/normals/moss_normal_map.jpg' );
+    /*var tNormal   = THREE.ImageUtils.loadTexture( 'img/normals/moss_normal_map.jpg' );
 
     tNormal.wrapS = THREE.RepeatWrapping; 
     tNormal.wrapT = THREE.RepeatWrapping; 
@@ -396,7 +529,7 @@
       vertexShader: vertexShader,
       fragmentShader: fragmentShader
 
-    });
+    });*/
 
   }
 

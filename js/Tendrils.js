@@ -52,7 +52,7 @@
       flowMultiplier: 0,
       maxVel:1000,
       dampening:.99999,
-      baseGeo: new THREE.IcosahedronGeometry( 30 , 2 ),
+      baseGeo: new THREE.CubeGeometry( 30 , 30 , 30 ),
       baseMat: new THREE.MeshNormalMaterial()
       
 
@@ -74,24 +74,42 @@
     
     this.flow = new THREE.Vector3( 0 , 1 , 0 );
 
-    var bM = new THREE.MeshNormalMaterial({color:0x000000});
-   // var bM = new THREE.MeshBasicMaterial({color:0x000000});
     
+    var uniforms = {
 
-    this.centerMat = material
-    this.center = new THREE.Mesh( new THREE.IcosahedronGeometry( 300 , 3 ) , bM );
+      lightPos: { type:"v3" , value: new THREE.Vector3(100,0,0)},
+      tNormal:{type:"t",value:T_NORM.sand},
+      time:timer,
+      t_iri:{ type:"t" , value:T_IRI.combo},
+      t_audio:{ type:"t" , value: audioController.texture },
+      texScale:{type:"f" , value:.001},
+      normalScale:{type:"f" , value:.8},
+      vVel:{ type:"v3" , value: this.velocity }
+
+
+    }
+
+    this.centerUniforms = uniforms;
+
+    vertexShader   = shaders.vertexShaders.link;
+    fragmentShader = shaders.fragmentShaders.link;
+
+    var material = new THREE.ShaderMaterial({
+
+      uniforms: uniforms,
+      vertexShader: vertexShader,
+      fragmentShader: fragmentShader
+
+    });
+
+
+
+    this.centerGeo = new THREE.IcosahedronGeometry( 300 , 3 );
+    this.centerMat = material;
+    this.center = new THREE.Mesh( this.centerGeo , this.centerMat );
     scene.add( this.center );
 
     this.bases = this.createBases();
-
-
-    for( var i =0; i < this.bases.length; i++ ){
-
-      var m = this.bases[i].mesh;
-      m.material = bM;
-      m.materialNeedsUpdate = true;
-
-    }
 
     this.startingTexture  = this.createStartingTexture();
     this.activeTexture    = this.createActiveTexture();
@@ -195,6 +213,9 @@
 
     var girth = {type:"f" ,value: this.params.girth }
     var headMultiplier = {type:"f" ,value: this.params.headMultiplier}
+    var texScale = {type:"f" ,value:.01 }
+    var normalScale = {type:"f" ,value: .3 }
+
 
 
     var t_iri = THREE.ImageUtils.loadTexture( 'img/iri/red.png' );
@@ -202,18 +223,67 @@
     var t_iri2 = THREE.ImageUtils.loadTexture( 'img/iri/pinkRed.png' );
 
 
+    var t_iri = {type:"t",value:t_iri};
+    var t_iri2 = {type:"t",value:t_iri};
+
+    var renderParams = {
+      t_iri:0,
+      t_iri2:1,
+      t_norm:1
+    }
+
+    var renderGui = gui.addFolder( 'renderGui' );
+   
+    renderGui
+      .add( renderParams , 't_iri', 0, T_IRI_STRINGS.length -1 )
+      .step( 1 ) 
+      .name( 'Iri Texture1' )
+      .onChange( function( value ){
+        var string = T_IRI_STRINGS[ value ]
+        this.renderUniforms.t_iri.value = T_IRI[ string ];
+
+      }.bind( this ) );
+
+    renderGui
+      .add( renderParams , 't_iri2', 0, T_IRI_STRINGS.length -1 )
+      .step( 1 ) 
+      .name( 'Iri Texture 2' )
+      .onChange( function( value ){
+
+        var string = T_IRI_STRINGS[ value ]
+        this.renderUniforms.t_iri2.value = T_IRI[ string ];
+
+      }.bind( this ) );
+
+
+    renderGui
+      .add( renderParams , 't_norm', 0, T_NORM_STRINGS.length -1 )
+      .step( 1 ) 
+      .name( 'Normal Texture' )
+      .onChange( function( value ){
+
+        var string = T_NORM_STRINGS[ value ]
+        this.renderUniforms.tNormal.value = T_NORM[ string ];
+
+      }.bind( this ) );
+
+    renderGui.add( girth , 'value' ).name( 'GIRTH' );
+    renderGui.add( headMultiplier , 'value' ).name('Head Multiplier');
+    renderGui.add( texScale , 'value' ).name('texScale');
+    renderGui.add( normalScale , 'value' ).name('normalScale');
+    
     this.renderUniforms = {
       t_pos:{type:"t",value:null},
-      t_iri:{type:"t",value:t_iri},
-      t_iri2:{type:"t",value:t_iri2},
+      t_iri:{ type:"t",value:T_IRI.combo },
+      t_iri2:{type:"t",value:T_IRI.combo},
       t_audio:{type:"t",value:audioController.texture},
       lightPos:{type:"v3",value:new THREE.Vector3( 0 , 1 , 0 )},
       t_active:{type:"t",value:this.activeTexture},
       girth:girth,
       tNormal:{type:"t",value:this.normalTexture},
       uMVMat:{type:"m4", value:this.center.matrixWorld},
-      texScale:{type:"f",value:.01},
-      normalScale:{type:"f",value:.2},
+      texScale:texScale,
+      normalScale:normalScale,
       headMultiplier:headMultiplier
     }
 
@@ -275,7 +345,7 @@
   Tendrils.prototype.activate = function(){
 
     scene.add( this.mesh );
-    scene.add( this.line );
+   // scene.add( this.line );
 
     for( var i = 0; i < this.bases.length; i++ ){
 
@@ -518,7 +588,7 @@
       var y = Math.floor( i / 16 );
       var mesh = new THREE.Mesh( 
         this.params.baseGeo,
-        this.params.baseMat
+        this.centerMat
       );
 
 
@@ -543,7 +613,6 @@
     
       var n = mesh.position.clone().normalize();
       mesh.lookAt( mesh.position.clone().add( n ) );
-      mesh.ro
       //mesh.rotation.x = Math.random();
       //mesh.rotation.y = Math.random();
       //mesh.rotation.z = Math.random();
@@ -728,14 +797,9 @@
 
   Tendrils.prototype.setPhysicsParams = function( params ){
 
-    console.log('asdass');
-    console.log( params );
     var u = this.physicsRenderer.simulationUniforms
     for( var propt in params ){
 
-      console.log('HEY');
-      console.log( params[ propt ] );
-
       
       if( u[propt] ){
 
@@ -751,14 +815,10 @@
 
   }
 
-  Tendrils.prototype.setRenderParam = function( params ){
+  Tendrils.prototype.setRenderParams = function( params ){
 
-    var u = this.physicsRender.simulationUniforms
+    var u = this.renderUniforms
     for( var propt in params ){
-
-      console.log('HEY');
-      console.log( params[ propt ] );
-
       
       if( u[propt] ){
 
@@ -773,13 +833,12 @@
     }
   }
 
-  Tendrils.prototype.setCenterParam = function( params ){
 
-    var u = this.physicsRender.simulationUniforms
+  Tendrils.prototype.setCenterParams = function( params ){
+
+    var u = this.centerUniforms;
+    
     for( var propt in params ){
-
-      console.log('HEY');
-      console.log( params[ propt ] );
 
       
       if( u[propt] ){
