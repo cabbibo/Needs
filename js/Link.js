@@ -169,12 +169,12 @@ Link.prototype.select = function(){
 
       LINKS[i].updateParams( this.params.ballParams );
 
-    
-
-
 
     }
-    //this.titleMesh.material.opacity = 1;
+    
+    this.titleMesh.material.opacity = 1;
+    this.mesh.material = this.material;
+    this.mesh.materialNeedsUpdate = true;
 
     var s = this.stream;
     console.log( s );

@@ -126,19 +126,27 @@
   var T_IRI = {}
 
 
-  T_IRI.red         = THREE.ImageUtils.loadTexture( 'img/iri/red.png' );
-  T_IRI.turq        = THREE.ImageUtils.loadTexture( 'img/iri/turq.png' );
-  T_IRI.pinkRed     = THREE.ImageUtils.loadTexture( 'img/iri/pinkRed.png' );
-  T_IRI.gold        = THREE.ImageUtils.loadTexture( 'img/iri/gold.png' );
-  T_IRI.combo       = THREE.ImageUtils.loadTexture( 'img/iri/combo.png' );
-  T_IRI.yellowPurp  = THREE.ImageUtils.loadTexture( 'img/iri/neonYellowPurp.png' );
-  T_IRI.wet         = THREE.ImageUtils.loadTexture( 'img/iri/greenBluePurp.png' );
-  T_IRI.orangeTurq  = THREE.ImageUtils.loadTexture( 'img/iri/orangeTurq.png' );
-  T_IRI.purpleBright = THREE.ImageUtils.loadTexture( 'img/iri/purpleBright.png' );
-  T_IRI.blue = THREE.ImageUtils.loadTexture( 'img/iri/blue.png' );
-  T_IRI.rainbow = THREE.ImageUtils.loadTexture( 'img/iri/rainbow.png' );
-  T_IRI.rainbowLight  = THREE.ImageUtils.loadTexture( 'img/iri/rainbowLight.png' );
-  T_IRI.turq2  = THREE.ImageUtils.loadTexture( 'img/iri/turq2.png' );
+  var cb = function(){
+    loader.endLoading(); 
+  }
+  var m = THREE.UVMapping;
+
+  var i = 'img/iri/';
+  var l = THREE.ImageUtils.loadTexture;
+  
+  T_IRI.red           = l( i + 'red.png'            , m , cb );
+  T_IRI.turq          = l( i + 'turq.png'           , m , cb );
+  T_IRI.pinkRed       = l( i + 'pinkRed.png'        , m , cb );
+  T_IRI.gold          = l( i + 'gold.png'           , m , cb );
+  T_IRI.combo         = l( i + 'combo.png'          , m , cb );
+  T_IRI.yellowPurp    = l( i + 'neonYellowPurp.png' , m , cb );
+  T_IRI.wet           = l( i + 'greenBluePurp.png'  , m , cb );
+  T_IRI.orangeTurq    = l( i + 'orangeTurq.png'     , m , cb );
+  T_IRI.purpleBright  = l( i + 'purpleBright.png'   , m , cb );
+  T_IRI.blue          = l( i + 'blue.png'           , m , cb );
+  T_IRI.rainbow       = l( i + 'rainbow.png'        , m , cb );
+  T_IRI.rainbowLight  = l( i + 'rainbowLight.png'   , m , cb );
+  T_IRI.turq2         = l( i + 'turq2.png'          , m , cb );
 
   var T_IRI_STRINGS = [];
 
@@ -146,21 +154,26 @@
 
     console.log( propt );
     T_IRI_STRINGS.push( propt );
+    loader.beginLoading();
+    
 
   }
 
   var T_NORM = {};
-  
-  T_NORM.carbon = THREE.ImageUtils.loadTexture( 'img/normals/carbonFiber.png' );
-  T_NORM.snow   = THREE.ImageUtils.loadTexture( 'img/normals/ice-snow.jpg' );
-  T_NORM.sand   = THREE.ImageUtils.loadTexture( 'img/normals/sand.png' );
-  T_NORM.ice    = THREE.ImageUtils.loadTexture( 'img/normals/7723-normal.jpg' );
-  T_NORM.moss   = THREE.ImageUtils.loadTexture( 'img/normals/moss_normal_map.jpg' );
+
+  var n = 'img/normals/';
+
+  T_NORM.carbon = l( n + 'carbonFiber.png'    , m , cb );
+  T_NORM.snow   = l( n + 'ice-snow.jpg'       , m , cb );
+  T_NORM.sand   = l( n + 'sand.png'           , m , cb );
+  T_NORM.ice    = l( n + '7723-normal.jpg'    , m , cb );
+  T_NORM.moss   = l( n + 'moss_normal_map.jpg', m , cb );
 
   var T_NORM_STRINGS = [];
 
   for( var propt in T_NORM ){
 
+    loader.beginLoading();    
     T_NORM[ propt ].wrapS = THREE.RepeatWrapping; 
     T_NORM[ propt ].wrapT = THREE.RepeatWrapping; 
     T_NORM_STRINGS.push( propt );
@@ -442,7 +455,7 @@
 
   var audioController = new AudioController();
 
-  var NOTFIRSTFRAME;
+  var NOTFIRSTFRAME; // Hack for some weird GL thing...
  // audioController.mute.gain.value = 0;
 
  // var stream = new Stream(  'audio/you.mp3',audioController  );
@@ -673,36 +686,6 @@
     objectRotator = new ObjectRotator( tendrils.center );
     controller.connect();
 
-
-    
-    /*var tNormal   = THREE.ImageUtils.loadTexture( 'img/normals/moss_normal_map.jpg' );
-
-    tNormal.wrapS = THREE.RepeatWrapping; 
-    tNormal.wrapT = THREE.RepeatWrapping; 
-  
-    var uniforms = {
-
-      lightPos: { type:"v3" , value:new THREE.Vector3() },
-      tNormal:{type:"t",value:tNormal},
-      time:timer,
-      t_iri:{ type:"t" , value: t_yellowPurp },
-      t_audio:{ type:"t" , value: audioController.texture },
-      texScale:{type:"f" , value:.001},
-      normalScale:{type:"f" , value:.8},
-
-    }
-
-    vertexShader   = shaders.vertexShaders.curve;
-    fragmentShader = shaders.fragmentShaders.curve;
-
-    var material = new THREE.ShaderMaterial({
-
-      uniforms: uniforms,
-      vertexShader: vertexShader,
-      fragmentShader: fragmentShader
-
-    });*/
-
     for( var i = 0; i < LINKS.length; i++ ){
 
       //LINKS[i].hoverOut();
@@ -752,12 +735,14 @@
 
     // Hack to make materials disappear proper
     if( !NOTFIRSTFRAME ){
-      console.log('asdas');
+
+     // console.log('asdas');
       for( var i = 0; i < LINKS.length; i++ ){
 
         LINKS[i].hoverOut();
 
       }
+      LINKS[4].select();
 
       NOTFIRSTFRAME = true;
     }
