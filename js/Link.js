@@ -25,21 +25,27 @@ function Link( id , total , params ){
     note:'BLAH',
 
     file:'audio/needs.mp3',
+   
     springDistance: 2000,
     dampening: .999999,
     springForceMultiplier: .001,
     centerForceMultiplier: .000001,
     centerSize:300,
 
+    //physicsParams:{},
+
     repelRadius: 500,
 
     geometry: LINK_GEO,
     maxVel: 40
 
+
   });
 
   this.stream = new Stream( this.params.file , audioController ); 
 
+  console.log('asdffff');
+  console.log( this.params.physicsParams );
   this.position = new THREE.Vector3(
     (Math.random() -.5 ) * 1000,
     (Math.random() -.5 ) * 1000,
@@ -108,7 +114,7 @@ Link.prototype.createLinkLine = function(){
 
   geo.vertices.push( this.position );
   geo.vertices.push( this.position );
-  geo.vertices.push(  this.position );
+  geo.vertices.push( this.position );
 
   geo.dynamic = true;
 
@@ -132,17 +138,21 @@ Link.prototype.activate = function(){
 
 Link.prototype.select = function(){
 
-  console.log( 'SELECSS');
-  ULTIMATE_STREAM.stop( this.stream.play() );
+  var s = this.stream;
+  console.log( s );
+  this.stream.stop( s.play.bind( this.stream ) );
 
+  console.log( this.params );
+  console.log( this.params.physicsParams );
+  tendrils.setPhysicsParams( this.params.physicsParams );
 
 }
 
 Link.prototype.hoverOver = function(){
 
-  repelRadii[ camera.repelID ] = 7000;
-  this.radius = 2000;
-  repelRadii[ this.id ] = this.radius;
+  //repelRadii[ camera.repelID ] = 7000;
+  //this.radius = 2000;
+  //repelRadii[ this.id ] = this.radius;
   this.hovered = true;
 
 
@@ -176,9 +186,9 @@ Link.prototype.hoverOver = function(){
 
 
 Link.prototype.hoverOut = function(){
-  repelRadii[ camera.repelID  ] = 100;
-  this.radius = this.params.repelRadius;
-  repelRadii[ this.id ] = this.radius;
+//  repelRadii[ camera.repelID  ] = 100;
+//  this.radius = this.params.repelRadius;
+//  repelRadii[ this.id ] = this.radius;
   this.hovered = false;
 
 

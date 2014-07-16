@@ -19,6 +19,8 @@
       background : #000;
     }
 
+    #container{ position:absolute; left:0px; top:0px; z-index:0; width:100%; height:100%; display:block; overflow:hidden}
+      body{ margin:0px; }
     #stats{
       position  : absolute;
       bottom    : 0px;
@@ -27,10 +29,9 @@
     }
 
     a{
-color: #fff;
-position: absolute;
-z-index: 999;
-
+      color: #fff;
+      position: absolute;
+      z-index: 999;
     }
 
     #linkInfo{
@@ -43,6 +44,16 @@ z-index: 999;
       z-index : 999;
 
     }
+
+
+    #GUI{
+
+      position:fixed;
+      right:0px;
+      top:0px;
+      z-index:999;
+
+    }
   </style>
 </head>
 <body>
@@ -50,10 +61,12 @@ z-index: 999;
   <div id="loading"> LOADING MODELS </div>
 
   <div id="linkInfo"></div>
+  <div id="GUI"></div>
 
 <script src = "lib/leap.js"               ></script>
 <script src = "lib/underscore.js"         ></script>
 <script src = "lib/three.js"              ></script>
+<script src = "lib/dat.gui.min.js"         ></script>
 <script src = "lib/jquery.min.js"         ></script>
 <script src = "lib/stats.min.js"          ></script>
 <script src = "lib/TrackballControls.js"  ></script>
@@ -80,31 +93,57 @@ z-index: 999;
     { 
       title: 'At Night / Miss You',
       file:'audio/atNight.mp3',
+
+      physicsParams:{
+
+        uFloatForce: 100,
+        uRadiusMultiplier:1 
+      },
+
     },
     
     { 
       title: 'Crush #4 / Slow Dance',
       file:'audio/slowDance.mp3',
+       physicsParams:{
+
+        uFloatForce: 10000,
+        uRadiusMultiplier: 1      },
+
     },
     
     { 
       title: 'Only Used To',
       file:'audio/only.mp3',
+       physicsParams:{
+
+        uFloatForce: 10000,
+        uRadiusMultiplier: 1      },
+
     },
     
     { 
       title: 'Give You',
       file:'audio/giveYou.mp3',
+       physicsParams:{
+
+        uFloatForce: 10000,
+        uRadiusMultiplier: 1      },
+
     },
     
     { 
       title: 'Needs',
       file:'audio/needs.mp3',
+       physicsParams:{
+
+        uFloatForce: 10000,
+        uRadiusMultiplier: 1
+      },
+
     },
 
   ]
-
-  console.log('Loading');
 
   // Global Variables for THREE.JS
   var container , camera, scene, renderer , stats;
@@ -131,10 +170,14 @@ z-index: 999;
 
   var clock = new THREE.Clock();
 
+  var gui = new dat.GUI({autoPlace:false});
+
+  var guiContainer = document.getElementById('GUI');
+  guiContainer.appendChild(gui.domElement);
 
   var audioController = new AudioController();
 
- // audioController.mute.gain.value = 0;
+  //audioController.mute.gain.value = 0;
 
  // var stream = new Stream(  'audio/you.mp3',audioController  );
 
@@ -186,7 +229,7 @@ z-index: 999;
   var n_carbon = THREE.ImageUtils.loadTexture( 'img/normals/carbonFiber.png' );
   var n_snow   = THREE.ImageUtils.loadTexture( 'img/normals/ice-snow.jpg' );
   var n_sand   = THREE.ImageUtils.loadTexture( 'img/normals/sand.png' );
-  var n_rock   = THREE.ImageUtils.loadTexture( 'img/normals/rock.png' );
+  //var n_rock   = THREE.ImageUtils.loadTexture( 'img/normals/rock.png' );
   var n_ice    = THREE.ImageUtils.loadTexture( 'img/normals/7723-normal.jpg' );
   var n_moss   = THREE.ImageUtils.loadTexture( 'img/normals/moss_normal_map.jpg' );
 
@@ -310,11 +353,6 @@ z-index: 999;
     repelRadii.push( 340 );
 
     camera.repelID = repelPositions.length - 1;
-
-    console.log( 'EFASD');
-    console.log( repelRadii.length );
-
-
 
     tendrils = new Tendrils({
 

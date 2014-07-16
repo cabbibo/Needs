@@ -15,6 +15,7 @@ uniform float uFloatForce;  // multiplier
 uniform float uSpringForce; // multiplier
 uniform float uSpringDist; // multiplier
 uniform float uRepelMultiplier; // multiplier
+uniform float uRadiusMultiplier; // multiplier
 uniform float uDampening; // multiplier
 uniform float maxVel;
 
@@ -78,7 +79,7 @@ vec3 getRepelForce( vec3 p ){
 
     float repelLength = length( repelDif );
 
-    if( repelLength < repelRadius ){
+    if( repelLength < repelRadius * uRadiusMultiplier ){
       float dis = abs(repelLength - repelRadius);
       repelForce -= normalize( repelDif ) * dis * uRepelMultiplier;
     }

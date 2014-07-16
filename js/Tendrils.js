@@ -82,10 +82,16 @@
     this.center = new THREE.Mesh( new THREE.IcosahedronGeometry( 300 , 3 ) , bM );
     scene.add( this.center );
 
-    console.log( 'CENTER' );
-    console.log( this.center );
- 
     this.bases = this.createBases();
+
+
+    for( var i =0; i < this.bases.length; i++ ){
+
+      var m = this.bases[i].mesh;
+      m.material = bM;
+      m.materialNeedsUpdate = true;
+
+    }
 
     this.startingTexture  = this.createStartingTexture();
     this.activeTexture    = this.createActiveTexture();
@@ -154,23 +160,25 @@
     var springDist = { type:"f",  value:this.params.springDist   }
     var maxVel = { type:"f" , value:this.params.maxVel }
     var dampening = { type:"f" , value:this.params.dampening }
+    var radiusMultiplier = { type:"f" , value:1 }
     
     this.physicsRenderer.setUniform( 'uRepelMultiplier' , repelMultiplier );
     this.physicsRenderer.setUniform( 'uFlowMultiplier' , flowMultiplier );
     this.physicsRenderer.setUniform( 'uFloatForce' , floatForce );
     this.physicsRenderer.setUniform( 'uSpringForce' , springForce);
     this.physicsRenderer.setUniform( 'uSpringDist' , springDist );
+    this.physicsRenderer.setUniform( 'uRadiusMultiplier' , radiusMultiplier );
     this.physicsRenderer.setUniform( 'maxVel' , maxVel );
     this.physicsRenderer.setUniform( 'uDampening' , dampening );
 
-   /* var physicsGui = gui.addFolder( 'PhysicsGui' );
+    var physicsGui = gui.addFolder( 'PhysicsGui' );
     physicsGui.add( repelMultiplier , 'value' ).name( 'Repel Multiplier' );
     physicsGui.add( flowMultiplier , 'value' ).name( 'Flow Multiplier' );
     physicsGui.add( floatForce , 'value' ).name( 'Float Force' );
     physicsGui.add( springForce , 'value' ).name( 'Spring Force' )
     physicsGui.add( springDist , 'value' ).name( 'Spring Dist' );
     physicsGui.add( maxVel , 'value' ).name( 'Max Vel' );
-    physicsGui.add( dampening , 'value' ).name( 'uDampening' );*/
+    physicsGui.add( dampening , 'value' ).name( 'uDampening' );
 
 
 
@@ -194,7 +202,7 @@
     var t_iri2 = THREE.ImageUtils.loadTexture( 'img/iri/pinkRed.png' );
 
 
-    var uniforms = {
+    this.renderUniforms = {
       t_pos:{type:"t",value:null},
       t_iri:{type:"t",value:t_iri},
       t_iri2:{type:"t",value:t_iri2},
@@ -212,7 +220,7 @@
 
     var materialLine = new THREE.ShaderMaterial({
 
-      uniforms:uniforms,
+      uniforms:this.renderUniforms,
       vertexShader: shaders.vertexShaders.tendrilLine,
       fragmentShader: shaders.fragmentShaders.tendrilLine,
       blending:THREE.AdditiveBlending,
@@ -224,7 +232,7 @@
 
     var material = new THREE.ShaderMaterial({
 
-      uniforms:uniforms,
+      uniforms:this.renderUniforms,
       vertexShader: shaders.vertexShaders.tendril,
       fragmentShader: shaders.fragmentShaders.tendril,
       //blending:THREE.AdditiveBlending,
@@ -235,7 +243,6 @@
 
 
 
-    console.log('BEGIN GEO CREATE');
     var geoLine = this.createLineGeo( this.size );
     var geo = this.createMeshGeo( this.size );
 
@@ -258,13 +265,7 @@
 
     this.flowMarker = new THREE.Line( this.flowMarkerGeo , new THREE.LineBasicMaterial() );
 
-    for( var i =0; i < this.bases.length; i++ ){
 
-      var m = this.bases[i].mesh;
-      m.material = bM;
-      m.materialNeedsUpdate = true;
-
-    }
     this.physicsRenderer.reset( this.startingTexture );
 
     //scene.add( this.flowMarker );
@@ -384,9 +385,6 @@
 
     }
 
-
-
-    console.log( TOTAL );
     return geo;
 
   }
@@ -416,8 +414,6 @@
       // Each row
       for( var i = 0; i < size; i++ ){
 
-
-        console.log('NEW TENDRIL')
 
         var tendrilIndex = i + ( j * size );
 
@@ -497,7 +493,6 @@
   
     }
 
-    console.log( TOTAL );
 
     return geo;
 
@@ -597,8 +592,6 @@
     activeTexture.generateMipmaps = false;
     activeTexture.needsUpdate = true;
 
-    console.log( 'ACTIVE TEXTURE' );
-    console.log( activeTexture );
     return activeTexture;
 
   }
@@ -731,5 +724,76 @@
     return [ x , y , z ] ;
 
   }
+
+
+  Tendrils.prototype.setPhysicsParams = function( params ){
+
+    console.log('asdass');
+    console.log( params );
+    var u = this.physicsRenderer.simulationUniforms
+    for( var propt in params ){
+
+      console.log('HEY');
+      console.log( params[ propt ] );
+
+      
+      if( u[propt] ){
+
+        u[propt].value = params[propt];
+
+      }else{
+
+        console.log(' No Uniform of this type' );
+
+      }
+
+    }
+
+  }
+
+  Tendrils.prototype.setRenderParam = function( params ){
+
+    var u = this.physicsRender.simulationUniforms
+    for( var propt in params ){
+
+      console.log('HEY');
+      console.log( params[ propt ] );
+
+      
+      if( u[propt] ){
+
+        u[propt].value = params[propt];
+
+      }else{
+
+        console.log(' No Uniform of this type' );
+
+      }
+
+    }
+  }
+
+  Tendrils.prototype.setCenterParam = function( params ){
+
+    var u = this.physicsRender.simulationUniforms
+    for( var propt in params ){
+
+      console.log('HEY');
+      console.log( params[ propt ] );
+
+      
+      if( u[propt] ){
+
+        u[propt].value = params[propt];
+
+      }else{
+
+        console.log(' No Uniform of this type' );
+
+      }
+
+    }
+  }
+
 
 

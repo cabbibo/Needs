@@ -82,8 +82,6 @@ ObjectRotator.prototype.onDocumentMouseDown = function(event){
   
   event.preventDefault();
 
-  console.log('HTIS');
-  console.log( this );
   this.mouseDown = true;
 
   this.startPoint = {
