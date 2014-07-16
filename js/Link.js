@@ -197,8 +197,8 @@ Link.prototype.hoverOver = function(){
  // this.titleMesh.position.z += 500;
  // this.titleMesh.position.x -= 100;
 
-  this.note.play();
-  this.note.gain.gain.value = .1;
+  /*this.note.play();
+  this.note.gain.gain.value = .1;*/
   
 
   //repelRadii[ camera.repelID ] = 7000;
