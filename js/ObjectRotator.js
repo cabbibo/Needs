@@ -8,7 +8,7 @@ function ObjectRotator( object ){
 
   this.curQuaternion;
 
-  this.rotationSpeed = .5;
+  this.rotationSpeed = 1.;
 
   this.maxSpeed = .1;
 

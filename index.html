@@ -177,6 +177,16 @@
       },
       
 
+       ballParams: {
+        springDistance: 5800,
+        dampening: 2.5,
+        springForceMultiplier: .0001,
+        centerForceMultiplier: .000001,
+        centerSize:410,
+        maxVel: 5,
+      },
+
+
       centerParams:{
 
         tNormal: T_NORM.moss,
@@ -212,9 +222,15 @@
         normalScale:.3
 
       },
-      
-      
 
+      ballParams:{
+        springDistance: -661000,
+        dampening: 1.3,
+        springForceMultiplier: -.000002,
+        centerForceMultiplier: .00001,
+        centerSize:480,
+        maxVel:19
+      },
 
       centerParams:{
 
@@ -230,7 +246,19 @@
     { 
       title: 'Only Used To',
       file:'audio/only.mp3',
-       physicsParams:{
+
+      ballParams: {
+        springDistance: 8800,
+        dampening: 2.5,
+        springForceMultiplier: .0001,
+        centerForceMultiplier: .000001,
+        centerSize:410,
+        maxVel: 15,
+      },
+
+
+      
+      physicsParams:{
 
         uFloatForce: 1000,
         uRadiusMultiplier: 1.4,
@@ -267,6 +295,16 @@
     { 
       title: 'Give You',
       file:'audio/giveYou.mp3',
+
+      ballParams: {
+        springDistance: 2600,
+        dampening: 1.63,
+        springForceMultiplier: .0005,
+        centerForceMultiplier: .000001,
+        centerSize:460,
+        maxVel: 17,
+      },
+
       physicsParams:{
 
         uFloatForce: 1000,
@@ -305,6 +343,16 @@
     { 
       title: 'Needs',
       file:'audio/needs.mp3',
+
+      ballParams: {
+        springDistance: 2000,
+        dampening: .999999,
+        springForceMultiplier: .001,
+        centerForceMultiplier: .000001,
+        centerSize:300,
+        maxVel: 30,
+      },
+
       physicsParams:{
 
         uFloatForce: 10000,
@@ -468,6 +516,59 @@
 
 
   }*/
+
+
+  var ballParams = {
+    springDistance: 2000,
+    dampening: .999999,
+    springForceMultiplier: .001,
+    centerForceMultiplier: .000001,
+    centerSize:300,
+    maxVel: 30,
+  }
+
+  var ballGui = gui.addFolder( 'Ball Params' );
+
+  ballGui.add( ballParams , 'springDistance' ).onChange( function(){
+    for( var i = 0; i < LINKS.length; i++ ){
+      LINKS[i].updateParams( ballParams );
+    }
+  });
+
+  ballGui.add( ballParams , 'dampening' ).onChange( function(){
+    for( var i = 0; i < LINKS.length; i++ ){
+      LINKS[i].updateParams( ballParams );
+    }
+  });
+  
+  ballGui.add( ballParams , 'springForceMultiplier' ).onChange( function(){
+    for( var i = 0; i < LINKS.length; i++ ){
+      LINKS[i].updateParams( ballParams );
+    }
+  });
+  
+  ballGui.add( ballParams , 'centerForceMultiplier' ).onChange( function(){
+    for( var i = 0; i < LINKS.length; i++ ){
+      LINKS[i].updateParams( ballParams );
+    }
+  });
+  
+  ballGui.add( ballParams , 'centerSize' ).onChange( function(){
+    for( var i = 0; i < LINKS.length; i++ ){
+      LINKS[i].updateParams( ballParams );
+    }
+  });
+
+  ballGui.add( ballParams , 'maxVel' ).onChange( function(){
+    for( var i = 0; i < LINKS.length; i++ ){
+      LINKS[i].updateParams( ballParams );
+    }
+  });
+
+
+
+
+
 
 
   // on repel radius change, loop through repel radii

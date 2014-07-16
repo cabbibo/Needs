@@ -52,7 +52,8 @@
       flowMultiplier: 0,
       maxVel:1000,
       dampening:.99999,
-      baseGeo: new THREE.CubeGeometry( 30 , 30 , 30 ),
+      //baseGeo: new THREE.CubeGeometry( 30 , 30 , 30 ),
+      baseGeo: new THREE.IcosahedronGeometry( 30 , 2 ),
       baseMat: new THREE.MeshNormalMaterial()
       
 

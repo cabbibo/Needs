@@ -40,7 +40,7 @@ function Link( id , total , params ){
     repelRadius: 500,
 
     geometry: LINK_GEO,
-    maxVel: 40,
+    maxVel: 30,
 
     t_iri: T_IRI.red,
     t_normal: T_NORM.sand
@@ -50,14 +50,14 @@ function Link( id , total , params ){
   this.stream = new Stream( this.params.file , audioController ); 
 
 
-  loader.beginLoading();
+  /*loader.beginLoading();
 
   this.note = new LoadedAudio( audioController , this.params.note , {
     texture:false 
   });
 
 //  this.note.gain.gain.value = .1;
-  this.note.onLoad = loader.endLoading.bind( loader );
+  this.note.onLoad = loader.endLoading.bind( loader );*/
 
   this.position = new THREE.Vector3(
     (Math.random() -.5 ) * 1000,
@@ -81,7 +81,8 @@ function Link( id , total , params ){
 
   this.titleMesh = textCreator.createMesh( this.params.title ,{
    
-    size: 100
+    size: 150,
+    //margin: 20000,
     
   });
 
@@ -94,6 +95,7 @@ function Link( id , total , params ){
   LINK_TITLE_MESHES.push( this.titleMesh );
 
   this.blackMat = new THREE.MeshBasicMaterial({color:0x000000});
+  //this.blackMat = new THREE.MeshBasicMaterial({color:0xffffff});
 
   this.radius   = this.params.repelRadius
 
@@ -164,6 +166,12 @@ Link.prototype.select = function(){
         LINKS[i].mesh.material = LINKS[i].blackMat;
         LINKS[i].mesh.materialNeedsUpdate = true;
       }
+
+      LINKS[i].updateParams( this.params.ballParams );
+
+    
+
+
 
     }
     //this.titleMesh.material.opacity = 1;
@@ -273,7 +281,32 @@ Link.prototype.hoverOut = function(){
 
 }
 
+Link.prototype.updateParams = function( params ){
 
+    var u = this.params
+    for( var propt in params ){
+      
+      if( u[propt] ){
+
+        u[propt] = params[propt];
+
+      }else{
+
+        console.log('NO: ' + propt );
+
+      }
+
+    }
+
+    this.velocity = new THREE.Vector3(
+        ( Math.random() - .5 ) * 100,
+        ( Math.random() - .5 ) * 100,
+        ( Math.random() - .5 ) * 100
+      );
+
+
+
+}
 
 Link.prototype.updatePhysics = function(){
 
@@ -319,12 +352,16 @@ Link.prototype.updatePosition = function(){
 
   if( this.position.length() < this.params.centerSize ){
 
+      
       this.position.normalize();
+
+      this.velocity.reflect( this.position );
       this.position.multiplyScalar( this.params.centerSize );
 
-      this.velocity.multiplyScalar( -1 );
+      //this.velocity.multiplyScalar( -1 );
 
   }
+
 
   
   if( this.velocity.length() > this.params.maxVel ){
@@ -337,6 +374,7 @@ Link.prototype.updatePosition = function(){
   this.position.add( this.velocity );
  
 
+  this.velocity.multiplyScalar( this.params.dampening );
 
   /*if( this.hovered === false ){
 
