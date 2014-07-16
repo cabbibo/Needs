@@ -1,7 +1,9 @@
 <html>
 
-<head>
-  <style>
+  <head>
+    <link rel="stylesheet" type="text/css" href="main.css">
+    
+   <style>
 
     
     @font-face {
@@ -10,7 +12,21 @@
     }
     html{ color:#fff; background:#000; font-family:"GeoSans" }
 
-    #container{
+    
+
+    #GUI{
+
+      position:fixed;
+      right:0px;
+      top:0px;
+      z-index:999;
+
+    }
+
+
+
+  </style>
+  <!--  #container{
       width      : 100%;
       height     : 100%;
       position   : absolute;
@@ -69,7 +85,7 @@
 
     }
 
-  </style>
+  </style>-->
 </head>
 <body>
 
@@ -100,6 +116,7 @@
 <script src = "js/Link.js"                ></script>
 <script src = "js/LinkArch.js"            ></script>
 <script src = "js/mechanics.js"           ></script>
+<script src = "js/addSocialMedia.js"     ></script>
 
 
 <script>
@@ -275,7 +292,9 @@
         girth: 3,
         headMultiplier: 13.5,
         texScale:0.001,
-        normalScale:.1
+        normalScale:.1,
+        tNormal:T_NORM.moss
+        
 
       },
       
@@ -689,6 +708,10 @@
       //LINKS[i].hoverOut();
 
     }
+
+
+    addSocialMedia( SOCIAL_MEDIA );
+
   }
 
 
