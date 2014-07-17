@@ -137,7 +137,20 @@ void main(){
   float current   = active.z;
   float playing   = current * selected;
 
-  float audioPower = length( texture2D( t_audio, vec2( vUv.x , 0.0 ) ));
+  vec4 aP = texture2D( t_audio, vec2( vUv.x , 0.0 ) );
+
+  float audioPower = aP.x;
+
+  if( indexRow == 0. ){
+    audioPower = aP.x;
+  }else if( indexRow == 1. ){
+    audioPower = aP.y;
+  }else if(indexRow == 2. ){
+    audioPower = aP.z;
+  }else if(indexRow == 3. ){
+    audioPower = aP.a;
+  }
+ // float audioPower = length( texture2D( t_audio, vec2( vUv.x , 0.0 ) ));
   
 
   float column = vUv.x;

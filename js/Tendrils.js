@@ -112,9 +112,18 @@
     this.center = new THREE.Mesh( this.centerGeo , bm);
     scene.add( this.center );
 
-    this.bases = this.createBases();
+    this.basePositions = {
+      sphere:       this.createBasePositions( 'sphere' ),
+      random:       this.createBasePositions( 'random' ),
+      ring:         this.createBasePositions( 'ring' ), 
+      spiral:       this.createBasePositions( 'spiral' ), 
+      tripleRing:   this.createBasePositions( 'tripleRing' ), 
+      doubleRing:   this.createBasePositions( 'doubleRing' ), 
+    }
 
-    this.startingTexture  = this.createStartingTexture();
+    this.bases = this.createBases( this.basePositions.ring );
+
+    this.baseTexture  = this.createBaseTexture( this.bases );
     this.activeTexture    = this.createActiveTexture();
     
     this.physicsRenderer = new PhysicsRenderer(
@@ -142,7 +151,7 @@
 
     this.physicsRenderer.setUniform( 't_og' , {
       type:"t",
-      value:this.startingTexture
+      value:this.baseTexture
     });
 
 
@@ -571,6 +580,22 @@
 
   }
 
+  Tendrils.prototype.resetBases = function( baseShape ){
+
+
+    console.log('RESETING' );
+    console.log( baseShape );
+    var shapeArray = this.basePositions[ baseShape ];
+
+    console.log( shapeArray );
+    this.updateBasePositions( shapeArray );
+    this.updateBaseTexture( shapeArray );
+
+
+
+  }
+
+
   Tendrils.prototype.updateBases = function( whichHit ){
 
     for( var i = 0; i < this.bases.length; i++ ){
@@ -581,44 +606,220 @@
 
   }
   
-  Tendrils.prototype.createBases = function(){
+  Tendrils.prototype.createBasePositions = function(type){
 
-    
-    var bases = []
+    var positions = [];
+
+
     for( var i = 0; i < this.size * 4; i++ ){
 
-      var x = i % 16;
-      var y = Math.floor( i / 16 );
-      var mesh = new THREE.Mesh( 
-        this.params.baseGeo,
-        this.centerMat
-      );
+      var f = Math.floor( (i / this.size) )/4;
+     
+      var offset = i % 4;
 
 
-      var position = new THREE.Vector3(
-        (Math.random() - .5) * this.width,
-        (Math.random() - .5) * this.height,
-        0
-      );
+      var section = Math.floor( i / this.size );
 
-      var position = new THREE.Vector3(
-        ((x-7.5)/16)*this.width,
-        ((y-7.5)/16)*this.height,
-        0
-      );
+      var indexInSection = i - ( section * this.size );
+      var index = (indexInSection * 4) + section;
+     // var index = Math.floor(i / this.size) / 4.;
 
+      index /= ( this.size * 4 );
       var r = 300; 
+      
       var t = Math.random() * 2 * Math.PI;
-      var p = (Math.random() -.5) * 2 * Math.PI;
+      var p =(Math.random() -.5) * 2 * Math.PI;
 
-      var pos = this.toCart( r , t , p );
-      mesh.position.set( pos[0] , pos[1] , pos[2])// = position;
+      var pos = new THREE.Vector3();
+
+      if( type == 'random' ){
+
+        t = Math.random() * 2 * Math.PI;
+        p =(Math.random() -.5) * 2 * Math.PI;   
+        var p = this.toCart( r , t , p );
+        pos = new THREE.Vector3( p[0] , p[1] , p[2] );
+
+
+
+      }else if( type == 'sphere' ){
+
+        var s12 = Math.floor( index * 12 );
+        var r12 = ( index - s12/12)*12;
+
+        if( s12 == 0 ){
+
+          z = 0;
+          x = -1;
+          y = (r12-.5)
+
+        }else if( s12 == 1 ){
+
+          z = 0;
+          x = 1;
+          y = (r12-.5)
+
+        }else if( s12 == 2 ){
+
+          z = -1;
+          x = 0;
+          y = (r12-.5)
+
+        }else if( s12 == 3 ){
+
+          z = 1;
+          x = 0;
+          y = (r12-.5)
+
+        }else if( s12 == 4 ){
+
+          z = 0;
+          y = -1;
+          x = (r12-.5)
+
+        }else if( s12 == 5 ){
+
+          z = 0;
+          y = 1;
+          x = (r12-.5)
+
+        }else if( s12 == 6 ){
+
+          z = -1;
+          y = 0;
+          x = (r12-.5)
+
+        }else if( s12 == 7 ){
+
+          z = 1;
+          y = 0;
+          x = (r12-.5)
+
+        }else if( s12 == 8 ){
+
+          y = 0;
+          x = -1;
+          z = (r12-.5)
+
+        }else if( s12 == 9 ){
+
+          y = 0;
+          x = 1;
+          z = (r12-.5)
+
+        }else if( s12 == 10 ){
+
+          y = -1;
+          x = 0;
+          z = (r12-.5)
+
+        }else if( s12 == 11 ){
+
+          y = 1;
+          x = 0;
+          z = (r12-.5)
+
+        }
+
+
+
+
+
+
+
+        
+        pos = new THREE.Vector3( x , y , z );
+        pos.normalize();
+        pos.multiplyScalar( 300 );
+
+      }else if( type == 'spiral' ){
+
+        var i2 = Math.floor( index * 2 );
+        t =  index * Math.PI * 4; 
+        p = Math.random() * .3 + Math.PI / (i2 + 1);
+
+        var p = this.toCart( r , t , p );
+
+        pos = new THREE.Vector3();
+
+
+
+        var t = index * 4 * Math.PI + Math.PI * Math.floor( index * 2. );
+      
+        var slice = Math.floor( index * 2)
+        index = (index*2); //- //(slice*index*.5));
+
+        if( slice == 1 ){
+
+          index -= 1; 
+
+        }
+       
+        //index *=2*  slice;
+        var t = index * 2 * Math.PI + Math.PI *slice;
+
+        
+        var x = (index -.5);
+        var xI = (.5 - Math.abs( x)) * 2;
+        
+        
+        pos.x = Math.pow( xI , .5 ) * 300 *  Math.sin( t) * (Math.random()*.3+1)
+ ;
+        pos.y = Math.pow( xI , .5 ) * 300 * Math.cos( t) * (Math.random()*.3 +1)
+
+        pos.z = (x + ((Math.random() -.5)*.1)) * 600 ;
+
+        pos.normalize().multiplyScalar( 300 );
+        //pos = new THREE.Vector3( p[0] , p[1] , p[2] );
+
+      }else if( type == 'ring' ){
+
+        t =  index * 2 * Math.PI;
+        p = 0;
+        var p = this.toCart( r , t , p );
+        pos = new THREE.Vector3( p[0] , p[1] , p[2] );
+
+
+
+      }else if( type == 'tripleRing' ){
+  
+        var i3 = Math.floor( index * 3 );
+
+        t =  index * Math.PI * 6;
+
+        var r3 = i3 - 1 ;
+
+        var rR = (1-Math.abs( r3 )*.2);
+        var x = Math.cos( t )*300*rR;
+        var y = Math.sin( t )*300 * rR;
+        var z = r3 * 200;
+
+
+        pos = new THREE.Vector3( x , y , z );
+        pos.normalize().multiplyScalar( 300 );
+
+
+
+      }
+
+      positions.push( pos );
+
+    }
+
+    return positions;
+
+  }
+
+
+  Tendrils.prototype.createBases = function( basePositions ){
+    
+    var bases = []
+    for( var i = 0; i < basePositions.length; i++ ){
+     
+      var mesh = new THREE.Mesh( this.params.baseGeo , this.centerMat );
+      mesh.position.copy( basePositions[i] )// = position;
     
       var n = mesh.position.clone().normalize();
       mesh.lookAt( mesh.position.clone().add( n ) );
-      //mesh.rotation.x = Math.random();
-      //mesh.rotation.y = Math.random();
-      //mesh.rotation.z = Math.random();
 
       var base = {}; 
       base.mesh = mesh; //new Monome( x , y , mesh );
@@ -627,9 +828,21 @@
 
     }
 
-
     return bases;
+  
+  }
 
+
+  Tendrils.prototype.updateBasePositions = function( basePositions ){
+
+    for( var i = 0; i < basePositions.length; i++ ){
+
+      this.bases[i].mesh.position.copy( basePositions[i] );
+
+    }
+
+    console.log('ASDASD');
+    console.log( this.baseTexture );
 
   }
 
@@ -685,88 +898,62 @@
  
   }
 
+  Tendrils.prototype.updateBaseTexture = function( bases ){
 
-  Tendrils.prototype.createStartingTexture = function(){
+    console.log('BASD');
+    console.log( bases );
+    console.log( this.baseTexture );
 
-    var data = new Float32Array( this.size * this.size * 4 );
+    var data = this.baseTexture.image.data;
 
-    var startingPos = []
-    for( var i = 0; i < this.size * 4; i++ ){
-
-      startingPos.push( [
-        (Math.random() - .5) * this.width,
-        (Math.random() - .5) * this.height,
-      ]);
-
-    }
     for( var i = 0; i < this.size; i++ ) {
 
       for( var j = 0; j < this.size; j++ ){
-
-
-        var preX = (i/this.size)* 16;
-        var x = Math.floor(preX);
-        var y = Math.floor((j/this.size)* 4);
-        var slice = 1 - (((j/this.size) * 4) - y );
         
-
+        var y = Math.floor((j/this.size)* 4);
+        
         tendrilIndex = i + (y * this.size);
 
-        var theta = (tendrilIndex / 256) * 2 * Math.PI;
-
-
-        var r = (slice * 16) * this.params.springDist + 50;
-
-
-        var t = Math.random() * 2 *  Math.PI; 
-        var p = (Math.random() - .5) * 2 *  Math.PI; 
-        
-        var xyz = this.toCart( r , t , p );
-
-        var x = xyz[0];
-        var y = xyz[1];
-        var z = xyz[2];
-
-        var p = this.bases[tendrilIndex].mesh.position;
-
-        var n = p.clone().normalize();
-
-        var fPos = p.clone().add( n.multiplyScalar(((slice) * 16) *this.params.springDist) );
-       
-        fPos  = p.clone();
-        //consol.e.
-       /* var x = r * Math.cos( theta );
-        var y = r * Math.sin( theta );
-        var z = slice;*/
-
-       /* y -= (preX - x );
-        x /= 4;
-
-        y = (4-y)-.875;
-        x = x;
-
-        z = slice;
-
-       // z *= 50;
-        x *= 300/4;
-        y *= 300/4;*/
+        var p = bases[tendrilIndex];
 
         var index = ( i + (j * this.size)) * 4;
 
-        data[ index + 0 ] = fPos.x; //this.bases[tendrilIndex].mesh.position.x;
-        data[ index + 1 ] = fPos.y;//this.bases[tendrilIndex].mesh.position.y;
-        data[ index + 2 ] = fPos.z;// * .0001;// (z * 16) * this.params.springDist ;
+        data[ index + 0 ] = p.x;
+        data[ index + 1 ] = p.y;
+        data[ index + 2 ] = p.z;
         data[ index + 3 ] = 0;
-
-        //data[ index + 0 ] = this.bases[tendrilIndex].mesh.position.x;
-        //data[ index + 1 ] = this.bases[tendrilIndex].mesh.position.y;
-        //data[ index + 2 ] =  (z * 16) * this.params.springDist ;
-        //data[ index + 3 ] = 0;
-
-
 
       }
 
+    }
+    this.baseTexture.needsUpdate = true;
+    //console.log( this.
+
+
+  }
+
+  Tendrils.prototype.createBaseTexture = function( bases ){
+
+    var data = new Float32Array( this.size * this.size * 4 );
+
+    for( var i = 0; i < this.size; i++ ) {
+
+      for( var j = 0; j < this.size; j++ ){
+        
+        var y = Math.floor((j/this.size)* 4);
+        
+        tendrilIndex = i + (y * this.size);
+
+        var p = bases[tendrilIndex].mesh.position;
+
+        var index = ( i + (j * this.size)) * 4;
+
+        data[ index + 0 ] = p.x;
+        data[ index + 1 ] = p.y;
+        data[ index + 2 ] = p.z;
+        data[ index + 3 ] = 0;
+
+      }
 
     }
 

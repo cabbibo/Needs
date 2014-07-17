@@ -43,7 +43,9 @@ function Link( id , total , params ){
     maxVel: 30,
 
     t_iri: T_IRI.red,
-    t_normal: T_NORM.sand
+    t_normal: T_NORM.sand,
+
+    baseShape:'sphere'
 
   });
 
@@ -178,7 +180,16 @@ Link.prototype.select = function(){
 
     var s = this.stream;
     console.log( s );
-    this.stream.stop( s.play.bind( this.stream ) );
+
+    var c = function(){
+
+      console.log( this );
+      this.stream.play();
+      tendrils.resetBases( this.params.baseShape );
+
+    }.bind( this );
+
+    this.stream.stop( c );
 
     tendrils.setPhysicsParams( this.params.physicsParams );
     tendrils.setRenderParams( this.params.renderParams );
@@ -193,8 +204,6 @@ Link.prototype.select = function(){
     CURRENT_SONG = undefined;
 
   }
-
-
 }
 
 
