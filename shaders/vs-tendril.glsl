@@ -7,20 +7,12 @@ uniform float headMultiplier;
 uniform mat4 uMVMat;
 uniform sampler2D t_audio;
 
-varying vec2 vUv;
 varying vec3 vNormal;
 
-varying float vSlice;
-varying float vAmount;
-varying vec3 vTest;
 varying float vHead;
 
 varying vec3 vView;
-varying mat3 vNormalMat;
 varying vec3 vLightDir;
-varying vec3 vMVPos;
-varying vec2 vActiveLookup;
-
 varying vec3 vPos;
 
 
@@ -72,8 +64,6 @@ void main(){
 
   vec2 uv = position.xy; //+ vec2( size/2. , size/2. );
 
-  vUv = uv;
-
   vec4 pos = texture2D( t_pos , uv );
 
  // float slices = 23.;// * 2.;
@@ -103,10 +93,6 @@ void main(){
   lookupX += .5/16.;
   lookupY += .5/16.;
     
-  vActiveLookup = vec2( lookupX , lookupY );
-  vAmount = amount;
-  vSlice = base; 
-
   vec3 p0 = vec3(0.);
   vec3 v0 = vec3(0.);
   vec3 p1 = vec3(0.);
@@ -114,11 +100,9 @@ void main(){
 
   vec3 p2 = vec3(0.);
 
-  vTest = vec3( 0. , 0. , 0. );
   // Top
   if( baseUp == 0. ){
 
-    vTest = vec3( 1. , 0. , 0. );
     p0 = texture2D( t_pos , vec2( uv.x , rowBase + ( baseUp / simSize )/4.)).xyz;
     p1 = texture2D( t_pos , vec2( uv.x , rowBase + ( baseDown / simSize )/4.)).xyz;
     p2 = texture2D( t_pos , vec2( uv.x , rowBase + ((baseDown + 1.) / simSize )/4.)).xyz;
@@ -129,7 +113,6 @@ void main(){
   // bottom
   }else if( baseDown == 16. ){
 
-    vTest = vec3(0. , 0. , 1. );
     p0 = texture2D( t_pos , vec2( uv.x , rowBase + ( baseUp / simSize )/4.) ).xyz;
     p1 = texture2D( t_pos , vec2( uv.x , rowBase + ( (baseDown) / simSize )/4. ) ).xyz;
     p2 = texture2D( t_pos , vec2( uv.x , rowBase + (baseUp - 1. ) / simSize )/4.).xyz;
@@ -139,7 +122,6 @@ void main(){
 
   }else{
 
-    vTest = vec3( 0. , 1. , 0. );
 
     p0 = texture2D( t_pos , vec2( uv.x , rowBase + ( baseUp / simSize )/4.) ).xyz;
     p1 = texture2D( t_pos , vec2( uv.x , rowBase + ( baseDown / simSize )/4. ) ).xyz;
@@ -184,8 +166,6 @@ void main(){
   vec3 basisX = normalize( upVectorPerp );
   vec3 basisY = cross( dirNorm , basisX );
 
-  //basisX = vec3( 1. , 0. , 0. );
-  //basisY = vec3( 0. , 1. , 0. );
 
   float theta = position.z * 2. * 3.14195;
  
@@ -197,11 +177,7 @@ void main(){
   vec3 point = columnPos + ( r * x * basisX ) + ( r * y * basisY );
 
 
-  //vec3 centerPos = columnPos;
-
   vec3 centerPos = texture2D( t_pos , uv ).xyz;
-
- 
 
 
   vHead = 0.;
@@ -214,28 +190,24 @@ void main(){
   if( baseDown > 9. ){
 
     vHead = 1.;
-    radius = audio * audio * audio * girth * headMultiplier * (max( 0. , sqrt(( 14. - (base) )))/5.);
 
-    //radius = audio * audio * audio * girth;
+    float a3 =  audio * audio * audio;
+    float shape = (max( 0. , sqrt(( 14. - (base) )))/5.);
+    radius = a3 * girth * headMultiplier * shape;
+
   }
-  //if( uv.x < 1. / 64. ){
-    point = centerOfCircle + radius * basisX * x  + radius * basisY * y;
-  //}else{
-  //  point = vec3(0.);
-  //}
+
+  point = centerOfCircle + radius * basisX * x  + radius * basisY * y;
  
   vNormal = normalize(point - centerOfCircle);
 
-  //vNormal = (uMVMat * vec4( vNormal , 1.0 )).xyz;
-
   vView = uMVMat[3].xyz;
- // vNormal = normalMatrix *  vNormal ;
-  vNormalMat = normalMatrix;
 
   vPos = point;
  
-  vMVPos = (uMVMat * vec4( vPos , 1.0 )).xyz;
-  vec3 lightDir = normalize( lightPos -  vMVPos );
+ 
+  vec3 MVPos = (uMVMat * vec4( vPos , 1.0 )).xyz;
+  vec3 lightDir = normalize( lightPos -  MVPos );
 
   vLightDir = lightDir;
 

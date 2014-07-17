@@ -5,24 +5,11 @@ uniform sampler2D t_iri;
 uniform sampler2D t_iri2;
 uniform sampler2D tNormal;
 uniform sampler2D t_audio;
-uniform sampler2D t_active;
-uniform vec3 lightPos;
-
-uniform vec3 color1;
-uniform vec3 color2;
-uniform vec3 color3;
-uniform vec3 color4;
-
 
 varying vec2 vActiveLookup;
 varying vec3 vNormal;
-varying vec2 vUv;
-varying float vSlice;
-varying float vAmount;
-varying vec3 vTest;
 varying float vHead;
 varying vec3 vPos;
-varying vec3 vMVPos;
 
 varying vec3 vView;
 varying float vDisplacement;
@@ -85,63 +72,10 @@ void main(){
   normalTex.y *= -1.;
   normalTex = normalize( normalTex );
   mat3 tsb = mat3( normalize( blended_tangent ), normalize( cross( vNorm, blended_tangent ) ), normalize( vNorm ) );
+  
   vec3 finalNormal = tsb * normalTex;
 
- /* vec3 vU = normalize( vMVPos );
-  vec3 r = reflect( normalize( vU ), normalize( finalNormal ) );
-  float m = 2.0 * sqrt( r.x * r.x + r.y * r.y + ( r.z + 1.0 ) * ( r.z + 1.0 ) );
-  vec2 calculatedNormal = vec2( r.x / m + 0.5,  r.y / m + 0.5 );
-
-  vec3 base = texture2D( tNormal, calculatedNormal ).rgb;
-
-  vec3 tNorm = texture2D( tNormal , vUv ).xyz;
-  tNorm = normalize( tNorm  ) * 1.;
-  
-  vec3 newNormal = normalize( vNorm + tNorm );*/
-
-  /*vec3 newNormal = finalNormal;
-
-  vec3 nNormal = normalize( vNormalMat * newNormal  );
-  vec3 nView = normalize(vView);
-  vec3 nReflection = normalize( reflect( vView , nNormal )); 
-
-  vec3 refl = reflect( vLightDir , nNormal );
-  float facingRatio = abs( dot(  nNormal, refl) );
-
-  float newDot = dot( normalize( nNormal ), nView );
-  float inverse_dot_view = 1.0 - max( newDot  , 0.0);
-
-  vec3 p1 = color1;
-  vec3 p2 = color2;
-  vec3 p3 = color3;
-  vec3 p4 = color4;
-  
-  vec3 v1 = vec3(0.);
-  vec3 v2 = .2  * p1-p3;
-  vec3 v3 = .5  * p2-p4;
-  vec3 v4 = vec3(0.);
-
-  vec3 c1 = p1;
-  vec3 c2 = p2 + v1/3.;
-  vec3 c3 = p3 - v2/3.;
-  vec3 c4 = p4;
-
-
-  vec3 lookup_table_color = cubicCurve( inverse_dot_view * facingRatio, c1 , c2 , c3 , c4 );
-
-
-  vec3 aColor = texture2D( t_audio , vec2( inverse_dot_view * (1.-facingRatio) ,0. )).xyz;*/
-
-
-  //gl_FragColor = vec4( vAmount , 0. , vSlice / 16. , 1. );
-
-  //vec3 test =  ( vTest * vAmount);
-
- // vec3 finalNormal = vNormal;// + 1. *  texture2D( tNormal , abs(vec2(sin(vNormal.y * 100.) , cos( vNormal.z * 10. )))).xyz;
-
- // vec3 c = finalNormal;
-  
- // normalize( finalNormal  );
+ 
   vec3 refl = reflect( vLightDir , finalNormal );
   float facingRatio = abs( dot( finalNormal , refl) );
   float newDot = dot( finalNormal  , normalize(vView) );
@@ -149,71 +83,7 @@ void main(){
 
   float lookup = inverse_dot_view * (1.-facingRatio);
   vec3 aColor = texture2D( t_audio , vec2( inverse_dot_view * (1.- facingRatio) , 0.0 ) ).xyz;
-  vec4 active = texture2D( t_active , vActiveLookup );
-
- /* vec3 p1 = color1;
-  vec3 p2 = color2;
-  vec3 p3 = color3;
-  vec3 p4 = color4;
-  
-  vec3 v1 = vec3(0.);
-  vec3 v2 = .2  * p1-p3;
-  vec3 v3 = .5  * p2-p4;
-  vec3 v4 = vec3(0.);
-
-  vec3 c1 = p1;
-  vec3 c2 = p2 + v1/3.;
-  vec3 c3 = p3 - v2/3.;
-  vec3 c4 = p4;
-
-
-  vec3 lookup_table_color = cubicCurve( inverse_dot_view * facingRatio, c1 , c2 , c3 , c4 );*/
-
-
- /* float hovered   = active.x;
-  float selected  = active.y;
-  float current   = active.z;
-
-  float lookupOffset = 0.;
-
-  if( hovered == 0. && selected == 0. && current == 0. ){
-    lookupOffset = 0.;
-  }
-
-  if( hovered == 1. && selected == 0. && current == 0. ){
-    lookupOffset = 1.;
-  }
-
-  if( hovered == 0. && selected == 1. && current == 0. ){
-    lookupOffset = 2.;
-  }
-
-  if( hovered == 0. && selected == 0. && current == 1. ){
-    lookupOffset = 3.;
-  }
-
-  if( hovered == 1. && selected == 1. && current == 0. ){
-    lookupOffset = 4.;
-  }
-
-
-  if( hovered == 0. && selected == 1. && current == 1. ){
-    lookupOffset = 5.;
-  }
-
-  if( hovered == 1. && selected == 1. && current == 1. ){
-    lookupOffset = 5.;
-  }
-
-  if( hovered == 1. && selected == 0. && current == 1. ){
-    lookupOffset = 5.;
-  }
-
-  lookupOffset /= 6.;
-
-
-  float fLookup =(  inverse_dot_view * facingRatio  * (1./6.) ) +lookupOffset;*/
-
+ 
   vec3 lookup_table_color = texture2D( t_iri , vec2( lookup , 0. ) ).xyz;
 
   if( vHead >= .5 ){
@@ -223,26 +93,8 @@ void main(){
   }
 
   vec3 nonFacing = lookup_table_color * (1.-facingRatio)* (1.-facingRatio)* (1.-facingRatio);
-  vec3 c =  lookup_table_color * aColor * .6 + nonFacing*.4;//aColor;//active.xyz * (vNormal*.7+.3) * .75 + (vHead * .25);
-
- /* float hovered = active.z;
-  float selected = active.y;
-  float playing = active.x;
-  float current = active.a;
-
-  c += hovered * color1;
-  c += selected * color2;
-  c += playing * color3;
-  c += current * color4;
-
-  vec3 cColor = ((current + 1. ) * .5) * lookup_table_color;
-  vec3 sColor = ((selected + 1. ) * .5) *  aColor;
-  vec3 hColor = ((hovered + 1. ) * .5) * c;
-  //gl_FragColor = vec4( lookup_table_color * aColor  * .75 + (vHead * .25) , 1. );
- // gl_FragColor = vec4(  aColor , 1. );
-  gl_FragColor = vec4( (cColor+sColor+hColor) * .5 + (vHead * .1)  , 1. );*/
-
-  //gl_FragColor = vec4( active.xyz , 1. );
-
+  vec3 c =  lookup_table_color * aColor * .6 + nonFacing*.4;
   gl_FragColor = vec4( c , .1 );
+
+  //gl_FragColor = vec4( 1. );
 }

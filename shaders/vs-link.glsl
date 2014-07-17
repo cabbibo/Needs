@@ -11,43 +11,7 @@ varying vec3 vView;
 
 varying mat3 vNormalMat;
 varying vec3 vLightDir;
-varying float vDisplacement;
 
-varying vec3 vMVPos;
-
-$simplex
-
-
-vec3 toSpherical( vec3 pos ){
-
-  float r = length( pos );
-  float t = atan( pos.y / pos.x );
-  float p = acos( pos.z / r );
-
-  return vec3( r , t , p );
-
-}
-
-vec3 toCart( vec3 rtp ){
-
-  float x = rtp.x * cos( rtp.y ) * sin( rtp.z );
-  float y = rtp.x * sin( rtp.y ) * sin( rtp.z );
-  float z = rtp.x * cos( rtp.z );
-
-  return vec3( x , y , z );
-
-}
-
-vec3 displace( vec3 p , vec3 o ){
-
-  float noise = snoise( normalize(p) * 2. + o );
- 
-  vec3 nP = p * (1. + noise * .1 );
-
-  return nP;
-
-
-}
 
 void main(){
 
@@ -64,15 +28,8 @@ void main(){
   vLightDir = lightDir;
 
 
- // vec3 flow = sin( time ) * vec3( 0. , 1. , 0. );
-
-
   vUv = uv;
  
-  //vPos += flow * vPos.x; //.3 *  normal * radial * texture2D( t_audio ,vec2( abs(normal.x) , 0. ) ).x ;
-
-  vMVPos = (modelViewMatrix * vec4( vPos , 1.0 )).xyz;
-
   gl_Position = projectionMatrix * modelViewMatrix * vec4( vPos , 1.0 );
 
 }

@@ -7,6 +7,10 @@ uniform sampler2D t_audio;
 uniform sampler2D tLookup;
 uniform sampler2D t_iri;
 
+uniform float texScale;
+uniform float normalScale;
+
+
 uniform vec3 color1;
 uniform vec3 color2;
 uniform vec3 color3;
@@ -22,12 +26,6 @@ varying mat3 vNormalMat;
 varying vec3 vLightDir;
 varying vec3 vLightPos;
 varying vec3 vView;
-varying vec3 vMVPos;
-
-uniform float texScale;
-uniform float normalScale;
-
-$simplex
 
 vec3 cubicCurve( float t , vec3  c0 , vec3 c1 , vec3 c2 , vec3 c3 ){
 

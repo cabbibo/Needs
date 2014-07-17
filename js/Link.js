@@ -51,16 +51,6 @@ function Link( id , total , params ){
 
   this.stream = new Stream( this.params.file , audioController ); 
 
-
-  /*loader.beginLoading();
-
-  this.note = new LoadedAudio( audioController , this.params.note , {
-    texture:false 
-  });
-
-//  this.note.gain.gain.value = .1;
-  this.note.onLoad = loader.endLoading.bind( loader );*/
-
   this.position = new THREE.Vector3(
     (Math.random() -.5 ) * 1000,
     (Math.random() -.5 ) * 1000,
@@ -179,11 +169,9 @@ Link.prototype.select = function(){
     this.mesh.materialNeedsUpdate = true;
 
     var s = this.stream;
-    console.log( s );
 
     var c = function(){
 
-      console.log( this );
       this.stream.play();
       tendrils.resetBases( this.params.baseShape );
 

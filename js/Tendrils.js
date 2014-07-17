@@ -334,12 +334,13 @@
     this.mesh.position = this.position;
     this.line.position = this.position;
 
-    this.physicsRenderer.createDebugScene();
-   // this.physicsRenderer.addDebugScene(scene);
+    /*this.physicsRenderer.createDebugScene();
+    this.physicsRenderer.addDebugScene(scene);
+
+    this.physicsRenderer.debugScene.scale.multiplyScalar( 10 );*/
 
     this.physicsRenderer.addBoundTexture( this.mesh , 't_pos' , 'output' );
 
-   // this.mesh.frustumCulled = false;
 
     this.flowMarkerGeo = new THREE.Geometry();
     this.flowMarkerGeo.vertices.push( new THREE.Vector3() );
@@ -357,7 +358,7 @@
   Tendrils.prototype.activate = function(){
 
     scene.add( this.mesh );
-   // scene.add( this.line );
+  //  scene.add( this.line );
 
     for( var i = 0; i < this.bases.length; i++ ){
 
@@ -583,15 +584,10 @@
   Tendrils.prototype.resetBases = function( baseShape ){
 
 
-    console.log('RESETING' );
-    console.log( baseShape );
     var shapeArray = this.basePositions[ baseShape ];
 
-    console.log( shapeArray );
     this.updateBasePositions( shapeArray );
     this.updateBaseTexture( shapeArray );
-
-
 
   }
 
@@ -841,9 +837,6 @@
 
     }
 
-    console.log('ASDASD');
-    console.log( this.baseTexture );
-
   }
 
 
@@ -899,10 +892,6 @@
   }
 
   Tendrils.prototype.updateBaseTexture = function( bases ){
-
-    console.log('BASD');
-    console.log( bases );
-    console.log( this.baseTexture );
 
     var data = this.baseTexture.image.data;
 
