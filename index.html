@@ -254,12 +254,12 @@
       },
 
       ballParams:{
-        springDistance: -661000,
+        springDistance: 3000,
         dampening: 1.3,
-        springForceMultiplier: -.000002,
-        centerForceMultiplier: .00001,
+        springForceMultiplier: .000002,
+        centerForceMultiplier: .0000001,
         centerSize:480,
-        maxVel:19
+        maxVel:10
       },
 
       centerParams:{
@@ -382,11 +382,11 @@
 
       ballParams: {
         springDistance: 2000,
-        dampening: .999999,
+        dampening: 1.999999,
         springForceMultiplier: .001,
         centerForceMultiplier: .000001,
         centerSize:300,
-        maxVel: 30,
+        maxVel: 10,
       },
 
       physicsParams:{
@@ -642,7 +642,7 @@
     // Getting the stats in the right position
     stats = new Stats();
     stats.domElement.id = 'stats';
-    document.body.appendChild( stats.domElement );
+    //document.body.appendChild( stats.domElement );
 
 
     // Setting up our Renderer

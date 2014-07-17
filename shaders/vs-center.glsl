@@ -13,11 +13,6 @@ varying mat3 vNormalMat;
 varying vec3 vLightDir;
 varying float vDisplacement;
 
-varying vec3 vMVPos;
-
-$simplex
-
-
 vec3 toSpherical( vec3 pos ){
 
   float r = length( pos );
@@ -63,15 +58,6 @@ void main(){
   vec3 lightDir = normalize( lightPos -  (modelViewMatrix * vec4( vPos , 1.0 )).xyz );
   vLightDir = lightDir;
 
-
- // vec3 flow = sin( time ) * vec3( 0. , 1. , 0. );
-
-
-  //vUv = uv;
- 
-  //vPos += flow * vPos.x; //.3 *  normal * radial * texture2D( t_audio ,vec2( abs(normal.x) , 0. ) ).x ;
-
-  vMVPos = (modelViewMatrix * vec4( vPos , 1.0 )).xyz;
 
   gl_Position = projectionMatrix * modelViewMatrix * vec4( vPos , 1.0 );
 

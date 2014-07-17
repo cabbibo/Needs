@@ -15,7 +15,6 @@ varying vec3 vView;
 varying float vDisplacement;
 
 varying vec3 vLightDir;
-varying mat3 vNormalMat;
 
 
 uniform float texScale;
