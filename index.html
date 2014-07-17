@@ -460,6 +460,7 @@
 
   var audioController = new AudioController();
 
+
   var NOTFIRSTFRAME; // Hack for some weird GL thing...
  // audioController.mute.gain.value = 0;
 
@@ -657,11 +658,11 @@
     initMechanics();
   
 
-    /*var mesh = new THREE.Mesh(
+  /*  var mesh = new THREE.Mesh(
     new THREE.CubeGeometry( 1000 , 1000 , 1000 ),
     new THREE.MeshBasicMaterial({map:audioController.texture })
-    );*/
-    //scene.add( mesh );
+    );
+    scene.add( mesh );*/
    
     for( var i = 0; i< SONG_PARAMS.length; i++ ){
       var l = new Link(i , SONG_PARAMS.length , SONG_PARAMS[i] );
