@@ -12,6 +12,9 @@ function ObjectRotator( object ){
 
   this.maxSpeed = .1;
 
+  this.lastMoveTimestamp = new Date();
+
+
   this.windowHalfX = window.innerWidth / 2;
   this.windowHalfY = window.innerHeight / 2;
 
@@ -79,7 +82,7 @@ ObjectRotator.prototype.handleRotation = function(){
 
 }
 ObjectRotator.prototype.onDocumentMouseDown = function(event){
-  
+ 
   event.preventDefault();
 
   this.mouseDown = true;
@@ -94,14 +97,25 @@ ObjectRotator.prototype.onDocumentMouseDown = function(event){
 
 ObjectRotator.prototype.onDocumentMouseMove = function(event){
 
+  var x , y;
+
+  if( event.x ){
+    x = event.x;
+    y = event.y;
+  }else{
+    x = event.pageX;
+    y = event.pageY;
+  }
+    
+    
   if( this.mouseDown == true ){
-    this.deltaX = event.x - this.startPoint.x;
-    this.deltaY = event.y - this.startPoint.y;
+    this.deltaX = x - this.startPoint.x;
+    this.deltaY = y - this.startPoint.y;
 
     this.handleRotation();
 
-    this.startPoint.x = event.x;
-    this.startPoint.y = event.y;
+    this.startPoint.x = x;
+    this.startPoint.y = y;
 
     this.lastMoveTimestamp = new Date();
   }
@@ -110,14 +124,24 @@ ObjectRotator.prototype.onDocumentMouseMove = function(event){
 
 ObjectRotator.prototype.onDocumentMouseUp = function(event){
 
+   var x , y;
+
+  if( event.x ){
+    x = event.x;
+    y = event.y;
+  }else{
+    x = event.pageX;
+    y = event.pageY;
+  }
+    
   if( this.mouseDown === true ){
 
     var t = new Date().getTime();
 
     if ( t- this.lastMoveTimestamp.getTime() > this.moveReleaseTimeDelta){
 
-      this.deltaX = event.x - this.startPoint.x;
-      this.deltaY = event.y - this,startPoint.y;
+      this.deltaX = x - this.startPoint.x;
+      this.deltaY = y - this.startPoint.y;
 
     }
 
