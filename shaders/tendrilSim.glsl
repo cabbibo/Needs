@@ -106,9 +106,13 @@ void main(){
 
   ogPos = ( uModelView * vec4( ogPos , 1. ) ).xyz;
 
-  vec3 floating = normalize(ogPos);
+  vec3 ogCenter = (uModelView * vec4( 0., 0. ,0. , 1. ) ).xyz;
 
-  float upwardsForce = 80000. / (length( ogPos ) * length( ogPos ));
+  vec3 ogDif = ogPos - ogCenter;
+  vec3 floating = normalize(ogDif);
+
+  //less outwards force the further we get away from the object
+  float upwardsForce = 80000. / (length( ogDif) * length( ogDif ));
 
 
   //vec3 fRepelPoint = repelPoint - offset;

@@ -358,7 +358,7 @@
   Tendrils.prototype.activate = function(){
 
     scene.add( this.mesh );
-  //  scene.add( this.line );
+    //scene.add( this.line );
 
     for( var i = 0; i < this.bases.length; i++ ){
 

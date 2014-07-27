@@ -34,7 +34,6 @@ function Link( id , total , params ){
     springForceMultiplier: .001,
     centerForceMultiplier: .000001,
     centerSize:300,
-
     //physicsParams:{},
 
     repelRadius: 500,
@@ -48,6 +47,8 @@ function Link( id , total , params ){
     baseShape:'sphere'
 
   });
+
+  this.centerPos = new THREE.Vector3();
 
   this.stream = new Stream( this.params.file , audioController ); 
 
@@ -334,7 +335,7 @@ Link.prototype.updatePhysics = function(){
 
   
   TMP_VECTOR.copy( this.position );
-  TMP_VECTOR.sub( new THREE.Vector3() );
+  TMP_VECTOR.sub( this.centerPos );
 
   var l = TMP_VECTOR.length();
   force.sub( TMP_VECTOR.multiplyScalar( this.params.centerForceMultiplier * l ) );

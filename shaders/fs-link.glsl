@@ -1,7 +1,7 @@
 #extension GL_OES_standard_derivatives : enable
 
 uniform vec3 lightPos;
-uniform float time;
+uniform float timer;
 uniform sampler2D tNormal;
 uniform sampler2D t_audio;
 uniform sampler2D tLookup;

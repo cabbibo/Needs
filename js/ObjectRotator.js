@@ -26,6 +26,17 @@ function ObjectRotator( object ){
     y:0
   }
 
+  this.zoomForce = 0;
+  this.zoomSpeed = 0;
+  this.minZoom = -2000;
+  this.maxZoom = 2000;
+
+  this.zoomDir =camera.position.clone();
+  this.zoomDir.sub(  this.object.position );
+
+  this.ogL = this.zoomDir.length();
+
+  this.zoomDir.normalize();
 
 
   this.minDelta = .05;
@@ -36,6 +47,9 @@ function ObjectRotator( object ){
   
   document.addEventListener('mousemove', this.onDocumentMouseMove.bind( this ), false);
   document.addEventListener('mouseup', this.onDocumentMouseUp.bind( this ), false);
+
+  document.addEventListener( 'mousewheel', this.onDocumentMouseWheel.bind( this ), false );
+  document.addEventListener( 'DOMMouseScroll', this.onDocumentMouseWheel.bind( this ), false )
 
 }
 
@@ -59,6 +73,35 @@ ObjectRotator.prototype.update = function(){
 
   }
   
+
+  //this.zoomDir = this.object.position.clone()this.cameraPosition
+
+  this.zoomSpeed += this.zoomForce/10;
+ // this.zoomSpeed * .1
+  this.object.position.add( this.zoomDir.clone().multiplyScalar(this.zoomSpeed ));
+  this.zoomSpeed *= .9;
+
+  var l = this.object.position.clone().sub( camera.position ).length();
+  l -= this.ogL;
+  l *= -1;
+  console.log( l );
+  if( l > this.maxZoom ){
+
+    this.object.position.normalize();
+    this.object.position.multiplyScalar( this.maxZoom );
+
+  }
+
+  if( l < this.minZoom ){
+
+    this.object.position.normalize();
+    this.object.position.multiplyScalar( -this.minZoom );
+
+  }
+
+  this.zoomForce = 0;
+  //if( this.object.position.z > this.maxZoom ) this.object.position.z = this.maxZoom;
+  //if( this.object.position.z < this.minZoom ) this.object.position.z = this.minZoom;
 
 
 }
@@ -151,6 +194,15 @@ ObjectRotator.prototype.onDocumentMouseUp = function(event){
 
 }
 
+ObjectRotator.prototype.onDocumentMouseWheel = function( event ){
+
+  console.log( event.wheelDelta );
+
+  this.zoomForce = event.wheelDelta
+
+
+
+}
 ObjectRotator.prototype.projectOnTrackball = function(touchX, touchY){
     
   var mouseOnBall = new THREE.Vector3();

@@ -616,7 +616,7 @@
     //camera repulsion
     repelPositions.push( camera.position );
     repelVelocities.push( new THREE.Vector3() );
-    repelRadii.push( 340 );
+    repelRadii.push( 0 );
 
     camera.repelID = repelPositions.length - 1;
 
@@ -636,7 +636,7 @@
 
     for( var i = 0; i < LINKS.length; i++ ){
 
-      //LINKS[i].hoverOut();
+      LINKS[i].centerPos = tendrils.center.position;
 
     }
 
