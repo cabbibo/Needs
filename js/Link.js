@@ -347,13 +347,13 @@ Link.prototype.updatePhysics = function(){
 Link.prototype.updatePosition = function(){
 
   //if( this.hovered ) return;
-
-  if( this.position.length() < this.params.centerSize ){
+  var dif = this.position.clone().sub( this.centerPos );
+  if( dif.length() < this.params.centerSize ){
 
       
-      this.position.normalize();
+      dif.normalize();
 
-      this.velocity.reflect( this.position );
+      this.velocity.reflect( dif.position );
       this.position.multiplyScalar( this.params.centerSize );
 
       //this.velocity.multiplyScalar( -1 );
