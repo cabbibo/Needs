@@ -33,7 +33,7 @@ function Link( id , total , params ){
     dampening: .999999,
     springForceMultiplier: .001,
     centerForceMultiplier: .000001,
-    centerSize:300,
+    centerSize:600,
     //physicsParams:{},
 
     repelRadius: 500,
@@ -353,8 +353,10 @@ Link.prototype.updatePosition = function(){
       
       dif.normalize();
 
-      this.velocity.reflect( dif.position );
-      this.position.multiplyScalar( this.params.centerSize );
+      this.velocity.reflect( dif );
+      dif.multiplyScalar( this.params.centerSize );
+      dif.add( this.centerPos );
+      this.position.copy( dif );//multiplyScalar( this.params.centerSize );
 
       //this.velocity.multiplyScalar( -1 );
 

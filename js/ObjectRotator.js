@@ -84,7 +84,6 @@ ObjectRotator.prototype.update = function(){
   var l = this.object.position.clone().sub( camera.position ).length();
   l -= this.ogL;
   l *= -1;
-  console.log( l );
   if( l > this.maxZoom ){
 
     this.object.position.normalize();
