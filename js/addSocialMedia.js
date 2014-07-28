@@ -1,10 +1,10 @@
   
 
       var SOCIAL_MEDIA = [
-        ["TWITTER" ,"twitter_1.png" , "http://twitter.com/share?text=New%20interactive%20EP%20from%20@JJ_VERNE%20coded%20by%20@cabbibo%20&url=http://cabbibo.github.io/needs"],
-        ["FACEBOOK", "facebook_1.png" , 'http://www.facebook.com/sharer.php?u=http://cabbibo.github.io/needs'],
+        ["TWITTER" ,"twitter_1.png" , "http://twitter.com/share?text=New%20interactive%20EP%20from%20@JJ_VERNE%20coded%20by%20@cabbibo%20&url=http://cabbi.bo/Needs"],
+        ["FACEBOOK", "facebook_1.png" , 'http://www.facebook.com/sharer.php?u=http://cabbi.bo/Needs'],
         ["SOUNDCLOUD" ,"soundcloud_1.png" , "https://soundcloud.com/jj-verne"],
-        ["CABBIBO" , "cabbibo_1.png" , "http://cabbibo.com"],
+        ["CABBIBO" , "cabbibo_1.png" , "http://cabbi.bo"],
       ]
       
 
