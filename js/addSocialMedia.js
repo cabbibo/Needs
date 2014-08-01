@@ -15,7 +15,7 @@
       document.body.appendChild( this.social );
 
       window.titleEP  = document.createElement('a');
-      window.titleEP.href = 'https://soundcloud.com/pinknoiseordinance';
+      window.titleEP.href = 'https://soundcloud.com/jj-verne';
       window.titleEP.target = '_blank';
       window.titleEP.id = 'titleEP';
       window.titleEP.innerHTML = 'JJ VERNE';
