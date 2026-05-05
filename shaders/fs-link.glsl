@@ -1,4 +1,3 @@
-#extension GL_OES_standard_derivatives : enable
 
 uniform vec3 lightPos;
 uniform float timer;
